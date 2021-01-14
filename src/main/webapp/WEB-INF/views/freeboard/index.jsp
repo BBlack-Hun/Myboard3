@@ -48,6 +48,7 @@
 						<div class="side-header side-content bg-white-op">
 						    <!-- Logo -->
 							<a class="h5 text-white sidebar-mini-hide" href="/MM//Main">
+							    <img rel="/resources/assets/img/favicons/favicon-16x16.png"/>
 							    <span class="font-w700 font-size-h5">Mummu's</span> <span class="font-w100">Manager</span>
 							</a>
 							<!-- END Logo -->

@@ -43,8 +43,9 @@
 					    <!-- Side Header -->
 						<div class="side-header side-content bg-white-op">
 						    <!-- Logo -->
-							<a class="h5 text-white sidebar-mini-hide" href="/MM/Main">
-							    <span class="font-w700 font-size-h5">Mummu's</span> <span class="font-w100">Manager</span>
+							<a class="h5 text-white" href="/MM/Main">
+								<img class="text-primary" src="<c:url value="resources/assets/img/favicons/favicon-16x16.png"/>">
+							    <span class="h5 font-w700 sidebar-mini-hide">Mummu's</span> <span class="font-w100 sidebar-mini-hide">Manager</span>
 							</a>
 							<!-- END Logo -->
 							
@@ -98,13 +99,13 @@
 				<!-- Left Session -->
 				<ul class="nav-header pull-left">
                     <li class="hidden-md hidden-lg">
-                        <!-- Layout API, functionality initialized in App() -> uiLayoutApi() -->
+<!--                         Layout API, functionality initialized in App() -> uiLayoutApi() -->
                         <button class="btn btn-default" data-toggle="layout" data-action="sidebar_toggle" type="button">
                             <i class="fa fa-navicon"></i>
                         </button>
                     </li>
                     <li class="hidden-xs hidden-sm">
-                        <!-- Layout API, functionality initialized in App() -> uiLayoutApi() -->
+<!--                         Layout API, functionality initialized in App() -> uiLayoutApi() -->
                         <button class="btn btn-default" data-toggle="layout" data-action="sidebar_mini_toggle" type="button">
                             <i class="fa fa-ellipsis-v"></i>
                         </button>
@@ -143,7 +144,8 @@
 			<!-- Main Container -->
 			<main id="main-container">
 				<!-- Page Header -->
-				<div class="bg-image overflow-hidden" style="background-image: url(resources/assets/img/photos/photo31@2x.jpg;);" >
+<!-- 				<div class="bg-image overflow-hidden" style="background-image: url(/Myboard3/src/main/webapp/resources/assets/img/photos/Dog(fixed).jpg);" > -->
+				<div class="bg-image overflow-hidden" style="background-image: url(resources/assets/img/photos/Dog3.jpg);" >
 					<div class="bg-black-op">
 						<div class="content content-narrow">
 							<div class="block block-transparent">
