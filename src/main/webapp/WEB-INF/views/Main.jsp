@@ -260,8 +260,14 @@
         <script src="<c:url value="/resources/assets/js/core/jquery.appear.min.js"/>"></script>
         <script src="<c:url value="/resources/assets/js/core/jquery.countTo.min.js"/>"></script>
         <script src="<c:url value="/resources/assets/js/core/jquery.placeholder.min.js"/>"></script>
-        
+        <script src="<c:url value="/resources/assets/js/core/js.cookie.min.js"/>"></script>
         <script src="<c:url value="/resources/assets/js/app.js"/>"></script>
 
     </body>
+    <script>
+            jQuery(function () {
+                // Init page helpers (CountTo plugin)
+                App.initHelpers('appear-countTo');
+            });
+        </script>
 </html>

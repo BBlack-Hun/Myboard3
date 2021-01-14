@@ -79,7 +79,7 @@
 						            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="nav-main-link-icon si si-energy"></i><span class="sidebar-mini-hide">자유게시판</span></a>
 						            <ul>
 						                <li>
-						                    <a href="/MM/freeboard/index">게시판 이동</a>
+						                    <a href="index">게시판 이동</a>
 						                </li>
 						            </ul>
 						        </li>
@@ -157,7 +157,7 @@
 						<div class="col-sm-5 text-right hidden-xs">
 							<ol class="breadcrumb push-10-t">
 								<li>게시판</li>
-								<li><a class="link-effect" href="/freeboard/index">자유게시판</a></li>
+								<li><a class="link-effect" href="index">자유게시판</a></li>
 							</ol>
 						</div>
 					</div>
