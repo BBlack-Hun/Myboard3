@@ -177,9 +177,12 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a tabindex="-1" href="login">
+                                 	<a tabindex="-1" href="#" onclick="document.getElementById('logout').submit();">
                                         <i class="si si-logout pull-right"></i>Log out
                                     </a>
+									<form id="logout" action="/MM/logout" method="POST">
+										<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
+									</form>
                                 </li>
                             </ul>
 						</div>

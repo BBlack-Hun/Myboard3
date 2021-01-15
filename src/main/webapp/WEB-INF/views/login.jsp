@@ -54,8 +54,8 @@
                                     <div class="col-xs-12">
                                         <div class="form-material form-material-primary floating">
                                         	<!-- 태그로 인식할 id -->
-                                            <input class="form-control" type="text" id="username" name="username">
-                                            <label for="username">Username</label>
+                                            <input class="form-control" type="text" id="login-username" name="username">
+                                            <label for="login-username">Username</label>
                                         </div>
                                     </div>
                                 </div>
@@ -63,8 +63,8 @@
                                     <div class="col-xs-12">
                                         <div class="form-material form-material-primary floating">
                                         	<!-- 태그로 인식할 id -->
-                                            <input class="form-control" type="password" id="password" name="password">
-                                            <label for="username">Password</label>
+                                            <input class="form-control" type="password" id="login-password" name="password">
+                                            <label for="login-password">Password</label>
                                         </div>
                                     </div>
                                 </div>
