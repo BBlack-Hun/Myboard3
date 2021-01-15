@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <html>
     <head>
         <meta charset="utf-8">
@@ -47,9 +48,9 @@
 					    <!-- Side Header -->
 						<div class="side-header side-content bg-white-op">
 						    <!-- Logo -->
-							<a class="h5 text-white sidebar-mini-hide" href="/MM//Main">
-							    <img rel="/resources/assets/img/favicons/favicon-16x16.png"/>
-							    <span class="font-w700 font-size-h5">Mummu's</span> <span class="font-w100">Manager</span>
+							<a class="h5 text-white" href="/MM/Main">
+								<img class="text-primary" src="<c:url value="/resources/assets/img/favicons/favicon-16x16.png"/>">
+							    <span class="h5 font-w700 sidebar-mini-hide">Mummu's</span> <span class="font-w100 sidebar-mini-hide">Manager</span>
 							</a>
 							<!-- END Logo -->
 							
@@ -72,7 +73,7 @@
 						            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-energy"></i><span class="sidebar-mini-hide">공지사항</span></a>
 						            <ul>
 						                <li>
-						                    <a href="/MM//notice/idnex">게시판 이동</a>
+						                    <a href="/MM/notice/index">게시판 이동</a>
 						                </li>
 						            </ul>
 						        </li>
@@ -85,6 +86,13 @@
 						            </ul>
 						        </li>
 						        <li class="nav-main-heading"><span class="sidebar-mini-hide">개발중</span></li>
+						        <li>
+						        	<a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-energy"></i><span class="sidebar-mini-hide">개발중</span></a>
+						            <ul>
+						                <li>
+						                    <a href="#">개발중</a>
+						                </li>
+						            </ul>
 						        <li class="nav-main-heading"><span class="sidebar-mini-hide">운영관리</span></li>
 						        <li>
 						            <a class="nav-main-link"  href="#"><i class="nav-main-link-icon si si-energy"></i><span class="sidebar-mini-hide">사용자 관리</span></a>
@@ -122,7 +130,7 @@
 					<li>
 						<div class="btn-group">
 							<button class="btn btn-default btn-image dropdown-toggle" data-toggle="dropdown" type="button">
-                                <img class="rounded" src="/searchmanager/resources/template/assets/media/avatars/avatar10.jpg" alt="Header Avatar" style="width: 18px;">
+                                <img class="rounded" src="<c:url value="/resources/assets/img/avatars/avatar10.jpg"/>" alt="Header Avatar" style="width: 18px;">
 								<span class="d-none d-sm-inline-block ml-1">admin</span>
 								<i class="fa fa-fw fa-angle-down d-none d-sm-inline-block"></i>
                             </button>
@@ -152,7 +160,7 @@
 					<div class="row items-push">
 						<div class="col-sm-7">
 							<h1 class="page-heading">
-								자유게시판 <small>아무거나 쓰고 싶은대로...</small>
+								자유게시판 <small>FreeBoard</small>
 							</h1>
 						</div>
 						<div class="col-sm-5 text-right hidden-xs">
@@ -164,9 +172,46 @@
 					</div>
 				</div>
 				<!-- END Page Header -->
-
+				
                 <!-- Page Content -->
-                <div>
+                <div class="content content d-none">
+	                <div class="block block-rounded">
+		                <div class="table-responsive">
+		                	<table class="table table-sm table-vcenter">
+		                		<thead>
+		                			<tr>
+		                				<th class="text-center" style="width:50px;"><a href="javascript:void(0)" class="all-check">#</a></th>
+		                				<th style="width: 10%">글 번호</th>
+		                				<th class="text-center" style="width: 35%">제목</th>
+		                				<th style="width: 15%">작성자</th>
+		                				<th style="width: 15%">생성일</th>
+		                				<th style="width: 15%">수정일</th>
+		                				<th style="width: 10%">조회수</th>
+		                			</tr>
+		                		</thead>
+		                		<tbody>
+		                			<c:forEach items="${list}" var = "list">
+										<tr>
+											<td class="text-center">
+												<div class="custom-control custom-ckeckbox mb-1">
+													<input type="checkbox" class="custom-control-input" id="${list.no }" name="dict-checkbox">
+				                                    <label class="custom-control-label" for="id"></label>
+												</div>
+											</td>
+											<td>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${list.no}" /></td>
+											<td>
+												<a href="/board/readView?no=${list.no}&page=${scrl.page}&perPageNum=${scrl.perPageNum}&searchType=${scrl.searchType}&keyword=${scrl.keyword}"><c:out value="${list.title}" /></a>
+											</td>
+											<td><c:out value="${list.writer}" /></td>
+											<td><fmt:formatDate value="${list.regDt}" pattern="yyyy-MM-dd"/></td>
+											<td><fmt:formatDate value="${list.modDt}" pattern="yyyy-MM-dd"/></td>
+											<td>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${list.hit}" /></td>
+										</tr>
+									</c:forEach>
+		                		</tbody>
+		                	</table>
+		                </div>
+	                </div>
                 </div>
                 <!-- END Page Content -->
             </main>
