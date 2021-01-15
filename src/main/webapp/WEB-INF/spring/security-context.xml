@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+                                 http://www.springframework.org/schema/beans/spring-beans.xsd
+                                 http://www.springframework.org/schema/security
+                                 http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<http auto-config="true" use-expressions="true">
+		<csrf disabled="true"/>
+		<intercept-url pattern="/Main" access="hasAnyRole('ROLE_USER','ROLE_GUEST')"/>
+		<form-login
+			username-parameter="username"
+			password-parameter="password"
+			login-processing-url="/login"
+			login-page="/login"
+			default-target-url="/Main" />
+		        
+		<logout
+			logout-url="/logout"
+			logout-success-url="/" delete-cookies=""/>
+
+	</http>
+	
+	<!-- mariadb 연동해 주는 코드 -->
+<!-- 	<jdbc-user-service data-source-ref="dataSource" id="userService" -->
+<!-- 		users-by-username-query="SELECT userid as username, passwd as password, enabled FROM users WHERE userid" -->
+<!-- 		authorities-by-username-query="SELECT userid as username, auth FROM users WHERE userid=?" /> -->
+	
+	<!-- 매핑! 및 암호화 -->	        
+	<authentication-manager>
+<!-- 		<authentication-provider user-service-ref="userService"> -->
+		<authentication-provider>
+<!-- 			<password-encoder hash="bcrypt" />			 -->
+			<user-service>
+		      <user name="admin" password="{noop}admin" authorities="ROLE_ADMIN"/>
+		      <user name="user" password="{noop}user" authorities="ROLE_USER"/>
+		    </user-service>
+		</authentication-provider>
+	</authentication-manager>
+	
+	<beans:bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+	
+
+    
+</beans:beans>

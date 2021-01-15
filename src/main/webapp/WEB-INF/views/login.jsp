@@ -54,8 +54,8 @@
                                     <div class="col-xs-12">
                                         <div class="form-material form-material-primary floating">
                                         	<!-- 태그로 인식할 id -->
-                                            <input class="form-control" type="text" id="login-username" name="login-username">
-                                            <label for="login-username">Username</label>
+                                            <input class="form-control" type="text" id="username" name="username">
+                                            <label for="username">Username</label>
                                         </div>
                                     </div>
                                 </div>
@@ -63,13 +63,14 @@
                                     <div class="col-xs-12">
                                         <div class="form-material form-material-primary floating">
                                         	<!-- 태그로 인식할 id -->
-                                            <input class="form-control" type="password" id="login-password" name="login-password">
-                                            <label for="login-password">Password</label>
+                                            <input class="form-control" type="password" id="password" name="password">
+                                            <label for="username">Password</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group push-30-t">
                                     <div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+	                                    <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>                                
                                         <button class="btn btn-sm btn-block btn-primary" type="submit">Log in</button>
                                     </div>
                                 </div>

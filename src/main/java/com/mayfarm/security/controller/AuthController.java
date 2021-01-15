@@ -20,7 +20,7 @@ public class AuthController {
 	
 	@RequestMapping(value="/login", method= RequestMethod.POST)
 	public String Login() {
-		System.out.println("너떄문에 뜨나???");
+		logger.info("login success");
 		return "redirect:/Main";
 	}
 }
