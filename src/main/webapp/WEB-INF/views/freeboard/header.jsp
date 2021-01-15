@@ -16,12 +16,13 @@
         <!-- Icons -->
         <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
         <link rel="shortcut icon" href="<c:url value="/resources/assets/img/favicons/favicon.png"/>">
-
         <link rel="icon" type="image/png" href="<c:url value="resources/assets/img/favicons/favicon-16x16.png"/>" sizes="16x16">
         <link rel="icon" type="image/png" href="<c:url value="resources/assets/img/favicons/favicon-32x32.png"/>" sizes="32x32">
         <link rel="icon" type="image/png" href="<c:url value="resources/assets/img/favicons/favicon-192x192.png"/>" sizes="192x192">
-        
         <!-- END Icons -->
+        
+        <!-- ajax -->
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
         <!-- Stylesheets -->
         <!-- Web fonts -->
@@ -47,7 +48,7 @@
 				    <div class="sidebar-content">
 					    <!-- Side Header -->
 						<div class="side-header side-content bg-white-op">
-						     <!-- Logo -->
+						    <!-- Logo -->
 							<a class="h5 text-white" href="/MM/Main">
 								<img class="text-primary" src="<c:url value="/resources/assets/img/favicons/favicon-16x16.png"/>">
 							    <span class="h5 font-w700 sidebar-mini-hide">Mummu's</span> <span class="font-w100 sidebar-mini-hide">Manager</span>
@@ -73,7 +74,7 @@
 						            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-energy"></i><span class="sidebar-mini-hide">공지사항</span></a>
 						            <ul>
 						                <li>
-						                    <a href="index">게시판 이동</a>
+						                    <a href="/MM/notice/index">게시판 이동</a>
 						                </li>
 						            </ul>
 						        </li>
@@ -81,7 +82,7 @@
 						            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="nav-main-link-icon si si-energy"></i><span class="sidebar-mini-hide">자유게시판</span></a>
 						            <ul>
 						                <li>
-						                    <a href="/MM/freeboard/index">게시판 이동</a>
+						                    <a href="index">게시판 이동</a>
 						                </li>
 						            </ul>
 						        </li>
@@ -142,9 +143,9 @@
                                     </a>
                                 </li>
                                 <li>
-									<a tabindex="-1" href="#" onclick="document.getElementById('logout').submit();">
-										<i class="si si-logout pull-right"></i>Log out
-									</a>
+                                     <a tabindex="-1" href="#" onclick="document.getElementById('logout').submit();">
+                                        <i class="si si-logout pull-right"></i>Log out
+                                    </a>
 									<form id="logout" action="/MM/logout" method="POST">
 										<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
 									</form>
@@ -162,105 +163,16 @@
 				<div class="content bg-gray-lighter">
 					<div class="row items-push">
 						<div class="col-sm-7">
-							<h1 class="page-heading">공지사항 <small>NoticeBoard</small></h1>
+							<h1 class="page-heading">
+								자유게시판 <small>FreeBoard</small>
+							</h1>
 						</div>
 						<div class="col-sm-5 text-right hidden-xs">
 							<ol class="breadcrumb push-10-t">
 								<li>게시판</li>
-								<li><a class="link-effect" href="index">공지사항</a></li>
+								<li><a class="link-effect" href="index">자유게시판</a></li>
 							</ol>
 						</div>
 					</div>
 				</div>
 				<!-- END Page Header -->
-
-                <!-- Page Content -->
-                <div class="content ">
-	                <div class="block block-rounded">
-	                	<div class="block-content">
-			                <div class="table-responsive">
-			                	<table class="table table-sm table-vcenter">
-			                		<thead>
-			                			<tr>
-			                				<th class="text-center" style="width:50px;"><a href="javascript:void(0)" class="all-check">#</a></th>
-			                				<th style="width: 10%">글 번호</th>
-			                				<th class="text-center" style="width: 35%">제목</th>
-			                				<th style="width: 15%">작성자</th>
-			                				<th style="width: 15%">생성일</th>
-			                				<th style="width: 15%">수정일</th>
-			                				<th style="width: 10%">조회수</th>
-			                			</tr>
-			                		</thead>
-									<div class="mb-3 d-flex">
-										<div class="ml-auto">
-											<button type="button" class="btn btn-primary" id="listAddBtn" onclick="javascript:searchmanagerUtils.goAnchor('#detail-content'); searchmanagerUtils.navShow('#add-tab');">글쓰기</button>
-											<button type="button" class="btn btn-danger" onclick="javascript:userManagement.deleteBtn();">삭제</button>
-										</div>
-									</div>
-			                		<tbody>
-			                			<c:forEach items="${list}" var = "list">
-											<tr>
-												<td class="text-center">
-													<div class="custom-control custom-ckeckbox mb-1">
-														<input type="checkbox" class="custom-control-input" id="${list.no }" name="dict-checkbox">
-					                                    <label class="custom-control-label" for="id"></label>
-													</div>
-												</td>
-												<td>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${list.no}" /></td>
-												<td>
-													<a href="/board/readView?no=${list.no}&page=${scrl.page}&perPageNum=${scrl.perPageNum}&searchType=${scrl.searchType}&keyword=${scrl.keyword}"><c:out value="${list.title}" /></a>
-												</td>
-												<td><c:out value="${list.writer}" /></td>
-												<td><fmt:formatDate value="${list.regDt}" pattern="yyyy-MM-dd"/></td>
-												<td><fmt:formatDate value="${list.modDt}" pattern="yyyy-MM-dd"/></td>
-												<td>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${list.hit}" /></td>
-											</tr>
-										</c:forEach>
-			                		</tbody>
-			                	</table>
-			                	<nav aria-label="Page navigation">
-					        		<ul class="pagination"><li class='page-item disabled'><a class='page-link'><i class='fa fa-angle-left'></i></a></li> 
-										<li class='page-item active'><a href='javascript:;' class='page-link'>1</a></li> 
-										<li class='page-item disabled'><a href='javascript:;' class='page-link'><i class='fa fa-angle-right'></i></a></li>
-									</ul>
-					        	</nav>
-			                	<hr>
-			                </div>
-		                </div>
-	                </div>
-                </div>
-                <!-- END Page Content -->
-            </main>
-            <!-- END Main Container -->
-
-            <!-- Footer -->
-            <footer id="page-footer" class="content-mini content-mini-full font-s12 bg-gray-lighter clearfix">
-                <div class="pull-left">
-                    <strong>Project</strong> &copy; <span class="js-year-copy"></span>
-                </div>
-            </footer>
-            <!-- END Footer -->
-        </div>
-        <!-- END Page Container -->        
-
-        <!-- OneUI Core JS: jQuery, Bootstrap, slimScroll, scrollLock, Appear, CountTo, Placeholder, Cookie and App.js -->
-        <script src="<c:url value="/resources/assets/js/core/jquery.min.js"/>"></script>
-        <script src="<c:url value="/resources/assets/js/core/bootstrap.min.js"/>"></script>
-        <script src="<c:url value="/resources/assets/js/core/jquery.slimscroll.min.js"/>"></script>
-        <script src="<c:url value="/resources/assets/js/core/jquery.scrollLock.min.js"/>"></script>
-        <script src="<c:url value="/resources/assets/js/core/jquery.appear.min.js"/>"></script>
-        <script src="<c:url value="/resources/assets/js/core/jquery.countTo.min.js"/>"></script>
-        <script src="<c:url value="/resources/assets/js/core/jquery.placeholder.min.js"/>"></script>
-        <script src="<c:url value="/resources/assets/js/core/js.cookie.min.js"/>"></script>
-        <script src="<c:url value="/resources/assets/js/app.js"/>"></script>
-
-        <!-- Page JS Code -->
-        <script src="<c:url value="/resources/assets/js/pages/base_pages_dashboard_v2.js"/>"></script>
-        <script>
-            jQuery(function () {
-                // Init page helpers (CountTo plugin)
-                App.initHelpers('appear-countTo');
-            });
-        </script>
-    </body>
-</html>

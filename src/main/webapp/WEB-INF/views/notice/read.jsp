@@ -166,14 +166,14 @@
 						<div class="btn-group">
 							<button class="btn btn-default btn-image dropdown-toggle" data-toggle="dropdown" type="button">
                                 <img class="rounded" src="<c:url value="/resources/assets/img/avatars/avatar10.jpg"/>" alt="Header Avatar" style="width: 18px;">
-								<span class="d-none d-sm-inline-block ml-1">admin</span>
+								<span class="d-none d-sm-inline-block ml-1">user</span>
 								<i class="fa fa-fw fa-angle-down d-none d-sm-inline-block"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li class="dropdown-header">Actions</li>
                                 <li>
                                     <a tabindex="-1" href="#">
-                                        <i class="si si-settings pull-right"></i>admin's Profile
+                                        <i class="si si-settings pull-right"></i>user's Profile
                                     </a>
                                 </li>
                                 <li>
@@ -252,7 +252,7 @@
 							<hr />
 							<div class="mb-3 d-flex">
 				        		<div class="ml-auto">
-						        	<button type="button" class="btn btn-primary" id="listAddBtn" onclick="javascript:searchmanagerUtils.goAnchor('#detail-content'); searchmanagerUtils.navShow('#add-tab');">추가</button>
+						        	<button type="button" class="btn btn-primary" id="listAddBtn" onclick="javascript:searchmanagerUtils.goAnchor('#detail-content'); searchmanagerUtils.navShow('#add-tab');">수정</button>
 						        	<button type="button" class="btn btn-danger" onclick="javascript:userManagement.deleteBtn();">삭제</button>
 						        	<button type="submit" class="list_btn btn btn-primary">목록</button>
 				        		</div>

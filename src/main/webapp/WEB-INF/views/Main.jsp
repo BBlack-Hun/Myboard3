@@ -126,14 +126,14 @@
 						<div class="btn-group">
 							<button class="btn btn-default btn-image dropdown-toggle" data-toggle="dropdown" type="button">
                                 <img class="rounded" src="<c:url value="/resources/assets/img/avatars/avatar10.jpg"/>" alt="Header Avatar" style="width: 18px;">
-								<span class="d-none d-sm-inline-block ml-1">admin</span>
+								<span class="d-none d-sm-inline-block ml-1">user</span>
 								<i class="fa fa-fw fa-angle-down d-none d-sm-inline-block"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li class="dropdown-header">Actions</li>
                                 <li>
                                     <a tabindex="-1" href="#">
-                                        <i class="si si-settings pull-right"></i>admin's Profile
+                                        <i class="si si-settings pull-right"></i>user's Profile
                                     </a>
                                 </li>
                                 <li>
@@ -190,7 +190,7 @@
                                         <small><i class="si si-calendar"></i> Today</small>
                                     </div>
                                     <div class="font-s12 font-w700">자유게시판 글 갯수</div>
-                                    <a class="h2 font-w300 text-primary" href="#" data-toggle="countTo" data-to="0"></a>
+                                    <a class="h2 font-w300 text-primary" href="freeboard/index" data-toggle="countTo" data-to="${boardcnt}"></a>
                                 </div>
                             </div>
                         </div>

@@ -26,7 +26,10 @@
         <!-- Stylesheets -->
         <!-- Web fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700%7COpen+Sans:300,400,400italic,600,700">
-
+		
+		<!-- ajax -->
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		
         <!-- Bootstrap and OneUI CSS framework -->
         <link rel="stylesheet" href="<c:url value="/resources/assets/css/bootstrap.min.css"/>">
         <link rel="stylesheet" id="css-main" href="<c:url value="/resources/assets/css/oneui.css"/>">
@@ -35,7 +38,39 @@
         <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/flat.min.css"> -->
         <!-- END Stylesheets -->
     </head>
-    
+     <script type="text/javascript">
+		$(document).ready(function(){
+			var formObj = $("form[name='readForm']");
+			
+			// 수정 
+			$(".update_btn").on("click", function(){
+				formObj.attr("action", "/board/updateView");
+				formObj.attr("method", "get");
+				formObj.submit();				
+			})
+			
+			// 삭제
+			$(".delete_btn").on("click", function(){
+				
+				var deleteYN = confirm("삭제하시겠습니가?");
+				if(deleteYN == true){
+					
+				formObj.attr("action", "/board/delete");
+				formObj.attr("method", "post");
+				formObj.submit();
+					
+				}
+			})
+			
+			// 목록
+			$(".list_btn").on("click", function(){
+				location.href = "index";
+// 				location.href = "/board/index?page=${scrl.page}"
+// 								+"&perPageNum${scrl.perPageNum}"
+// 								+"&searchType=${scrl.searchType}&keyword=${scrl.keyword}";
+			})
+		});
+    </script>
     <body>
     
         <!-- Page Container -->
@@ -47,7 +82,7 @@
 				    <div class="sidebar-content">
 					    <!-- Side Header -->
 						<div class="side-header side-content bg-white-op">
-						     <!-- Logo -->
+						    <!-- Logo -->
 							<a class="h5 text-white" href="/MM/Main">
 								<img class="text-primary" src="<c:url value="/resources/assets/img/favicons/favicon-16x16.png"/>">
 							    <span class="h5 font-w700 sidebar-mini-hide">Mummu's</span> <span class="font-w100 sidebar-mini-hide">Manager</span>
@@ -142,12 +177,9 @@
                                     </a>
                                 </li>
                                 <li>
-									<a tabindex="-1" href="#" onclick="document.getElementById('logout').submit();">
-										<i class="si si-logout pull-right"></i>Log out
-									</a>
-									<form id="logout" action="/MM/logout" method="POST">
-										<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
-									</form>
+                                    <a tabindex="-1" href="login">
+                                        <i class="si si-logout pull-right"></i>Log out
+                                    </a>
                                 </li>
                             </ul>
 						</div>
@@ -162,12 +194,14 @@
 				<div class="content bg-gray-lighter">
 					<div class="row items-push">
 						<div class="col-sm-7">
-							<h1 class="page-heading">공지사항 <small>NoticeBoard</small></h1>
+							<h1 class="page-heading">
+							<a class="link-effect" href="index"><small>자유게시판 <small>FreeBoard</small></small></a>
+							</h1>
 						</div>
 						<div class="col-sm-5 text-right hidden-xs">
 							<ol class="breadcrumb push-10-t">
 								<li>게시판</li>
-								<li><a class="link-effect" href="index">공지사항</a></li>
+								<li><a class="link-effect" href="index">자유게시판</a></li>
 							</ol>
 						</div>
 					</div>
@@ -175,60 +209,55 @@
 				<!-- END Page Header -->
 
                 <!-- Page Content -->
-                <div class="content ">
+                <!-- 이곳에 게시판 넣기 -->
+                <div class="content d-none" id="detail-content">
 	                <div class="block block-rounded">
-	                	<div class="block-content">
-			                <div class="table-responsive">
-			                	<table class="table table-sm table-vcenter">
-			                		<thead>
-			                			<tr>
-			                				<th class="text-center" style="width:50px;"><a href="javascript:void(0)" class="all-check">#</a></th>
-			                				<th style="width: 10%">글 번호</th>
-			                				<th class="text-center" style="width: 35%">제목</th>
-			                				<th style="width: 15%">작성자</th>
-			                				<th style="width: 15%">생성일</th>
-			                				<th style="width: 15%">수정일</th>
-			                				<th style="width: 10%">조회수</th>
-			                			</tr>
-			                		</thead>
-									<div class="mb-3 d-flex">
-										<div class="ml-auto">
-											<button type="button" class="btn btn-primary" id="listAddBtn" onclick="javascript:searchmanagerUtils.goAnchor('#detail-content'); searchmanagerUtils.navShow('#add-tab');">글쓰기</button>
-											<button type="button" class="btn btn-danger" onclick="javascript:userManagement.deleteBtn();">삭제</button>
-										</div>
-									</div>
-			                		<tbody>
-			                			<c:forEach items="${list}" var = "list">
-											<tr>
-												<td class="text-center">
-													<div class="custom-control custom-ckeckbox mb-1">
-														<input type="checkbox" class="custom-control-input" id="${list.no }" name="dict-checkbox">
-					                                    <label class="custom-control-label" for="id"></label>
-													</div>
-												</td>
-												<td>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${list.no}" /></td>
-												<td>
-													<a href="/board/readView?no=${list.no}&page=${scrl.page}&perPageNum=${scrl.perPageNum}&searchType=${scrl.searchType}&keyword=${scrl.keyword}"><c:out value="${list.title}" /></a>
-												</td>
-												<td><c:out value="${list.writer}" /></td>
-												<td><fmt:formatDate value="${list.regDt}" pattern="yyyy-MM-dd"/></td>
-												<td><fmt:formatDate value="${list.modDt}" pattern="yyyy-MM-dd"/></td>
-												<td>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${list.hit}" /></td>
-											</tr>
-										</c:forEach>
-			                		</tbody>
-			                	</table>
-			                	<nav aria-label="Page navigation">
-					        		<ul class="pagination"><li class='page-item disabled'><a class='page-link'><i class='fa fa-angle-left'></i></a></li> 
-										<li class='page-item active'><a href='javascript:;' class='page-link'>1</a></li> 
-										<li class='page-item disabled'><a href='javascript:;' class='page-link'><i class='fa fa-angle-right'></i></a></li>
-									</ul>
-					        	</nav>
-			                	<hr>
-			                </div>
-		                </div>
-	                </div>
-                </div>
+		                <div class="block-content block-content-full block-content-narrow container">
+							<hr />
+							<section id="container">
+							
+								<form name="readForm" role="form" method="post">
+									<input type="hidden" id="no" name="no" value="${read.no}"/>
+									<input type="hidden" id="page" name="page" value="${scrl.page}"> 
+									<input type="hidden" id="perPageNum" name="perPageNum" value="${scrl.perPageNum}"> 
+									<input type="hidden" id="searchType" name="searchType" value="${scrl.searchType}"> 
+									<input type="hidden" id="keyword" name="keyword" value="${scrl.keyword}"> 
+								</form>
+								
+								<div class="form-group">
+									<label for="title" class="col-sm-2 control-label">제목</label>
+									<input type="text" id="title" name="title" class="form-control" value="${read.title}" readonly="readonly"/>
+								</div>
+								<div class="form-group">	
+									<label for="content" class="col-sm-2 control-label">내용</label>
+									<textarea id="content" name="content" class="form-control" readonly="readonly" ><c:out value="${read.content}" /></textarea>
+								</div>
+								<div class="form-group">
+									<label for="writer" class="col-sm-2 control-label">작성자</label>
+									<input type="text" id="writer" name="writer" value="${read.writer}" class="form-control" readonly="readonly" />
+								</div>
+								<div class="form-group">			
+									<label for="regdate" class="col-sm-2 control-label">작성날짜</label>
+									<fmt:formatDate value="${read.regDt}" pattern="yyyy-MM-dd a h:mm"/>
+								</div>					
+								<div class="form-group">
+									<label for="regdate" class="col-sm-2 control-label">수정날짜</label>
+									<fmt:formatDate value="${read.modDt}" pattern="yyyy-MM-dd a h:mm"/>					
+								</div>
+							</section>
+							</br>
+							<hr />
+							<div class="mb-3 d-flex">
+				        		<div class="ml-auto">
+						        	<button type="button" class="btn btn-primary" id="listAddBtn" onclick="javascript:searchmanagerUtils.goAnchor('#detail-content'); searchmanagerUtils.navShow('#add-tab');">수정</button>
+						        	<button type="button" class="btn btn-danger" onclick="javascript:userManagement.deleteBtn();">삭제</button>
+						        	<button type="submit" class="list_btn btn btn-primary">목록</button>
+				        		</div>
+				        	</div>
+							
+						</div>
+					</div>
+				</div>
                 <!-- END Page Content -->
             </main>
             <!-- END Main Container -->
