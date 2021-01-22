@@ -10,13 +10,13 @@
 	<div class="row items-push">
 		<div class="col-sm-7">
 			<h1 class="page-heading">
-				자유게시판 <small>FreeBoard</small>
+				엘라스틱 <small>Search</small>
 			</h1>
 		</div>
 		<div class="col-sm-5 text-right hidden-xs">
 			<ol class="breadcrumb push-10-t">
 				<li>게시판</li>
-				<li><a class="link-effect" href="index">자유게시판</a></li>
+				<li><a class="link-effect" href="index">엘라스틱서치</a></li>
 			</ol>
 		</div>
 	</div>

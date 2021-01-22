@@ -196,7 +196,44 @@
 		    <artifactId>spring-security-taglibs</artifactId>
 		    <version>5.1.12.RELEASE</version>
 		</dependency>
-	
+		<!-- ElasticSearch -->
+		<dependency> 
+			<groupId>org.elasticsearch</groupId> 
+			<artifactId>elasticsearch</artifactId> 
+			<version>7.6.0</version> 
+		</dependency>
+
+		<dependency> 
+			<groupId>org.elasticsearch.client</groupId> 
+			<artifactId>elasticsearch-rest-client</artifactId> 
+			<version>7.6.0</version> 
+		</dependency> 
+
+		<dependency> 
+			<groupId>org.elasticsearch.client</groupId> 
+			<artifactId>elasticsearch-rest-high-level-client</artifactId> 
+			<version>7.6.0</version> 
+		</dependency> 
+
+		<dependency>
+		    <groupId>org.springframework.data</groupId>
+		    <artifactId>spring-data-elasticsearch</artifactId>
+		    <version>4.0.0.RELEASE</version>
+		</dependency>
+		<!-- log4j2 -->
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-api</artifactId>
+		    <version>2.7</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-core</artifactId>
+		    <version>2.7</version>
+		</dependency>
+
+		
+		
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -243,4 +280,12 @@
             </plugin>
         </plugins>
     </build>
+    
+    <distributionManagement>
+    	<repository> 
+			<id>spring-libs-snapshot</id> 
+			<name>Spring Snapshot Repository</name> 
+			<url>https://repo.spring.io/libs-snapshot</url> 
+		</repository>
+    </distributionManagement>
 </project>

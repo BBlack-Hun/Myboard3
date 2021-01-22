@@ -3,7 +3,25 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<%@include file="header.jsp" %>
+<%@include file="../include/header.jsp" %>
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+	<div class="row items-push">
+		<div class="col-sm-7">
+			<h1 class="page-heading">
+				자유게시판 <small>FreeBoard</small>
+			</h1>
+		</div>
+		<div class="col-sm-5 text-right hidden-xs">
+			<ol class="breadcrumb push-10-t">
+				<li>게시판</li>
+				<li><a class="link-effect" href="index">자유게시판</a></li>
+			</ol>
+		</div>
+	</div>
+</div>
+<!-- END Page Header -->
 
 <!-- Page Content -->
 <!-- 이곳에 게시판 넣기 -->
@@ -73,4 +91,4 @@
 </script>
 
 <!-- footer include -->
-<%@include file="footer.jsp" %>
+<%@include file="../include/footer.jsp" %>
