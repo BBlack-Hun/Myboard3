@@ -53,6 +53,7 @@ public class Test {
 				Map<String, Object> sourceMap = hit.getSourceAsMap(); // hit의 내용을 Map으로 받아옴
 				// 
 				list.add(sourceMap);
+				System.out.println(sourceMap);
 				System.out.println(sourceMap.get("firstname"));	// 각 sourceMap에서 firstname에 해당하는 값을 출력
 				}
 			// list의 갯수를 출력 (지금 넣을 줄 몰라서... 0개 ㅎㅎ)

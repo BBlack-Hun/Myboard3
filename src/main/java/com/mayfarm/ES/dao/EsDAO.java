@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -13,6 +15,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.search.MatchQuery;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -65,5 +68,26 @@ public class EsDAO {
 		searchRequest.source(sourceBuilder);
 		
 		return restClient.search(searchRequest, RequestOptions.DEFAULT);
+	}
+	
+	public SearchResponse READ(int no) throws IOException {
+		System.out.println("값이 넘어 왔는지 확인 " + no);
+		SearchRequest searchRequest = new SearchRequest("bank");
+		SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+		
+		MatchQueryBuilder query = QueryBuilders.matchQuery("account_number",  no);
+		sourceBuilder.query(query);
+		searchRequest.source(sourceBuilder);
+		
+		return restClient.search(searchRequest, RequestOptions.DEFAULT);
+		
+		
+	}
+	
+	public void DELETE(String targetIndex) throws IOException {
+		
+		DeleteRequest deleteRequest = new DeleteRequest("bank", targetIndex);
+		
+		restClient.delete(deleteRequest, RequestOptions.DEFAULT);
 	}
 }

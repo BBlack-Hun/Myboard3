@@ -29,7 +29,7 @@
 		<div class="block-content">
 			<div class="table-responsive">
 				<form method="GET">
-					<label>검색하고 싶은 것을 입력하세요 ㅎㅎ 어처피 지금은 안됌 ㅎㅎ</label>
+					<label>검색하고 싶은 것을 입력하세요 ㅎㅎ</label>
 					<input type="text" name="str">
 					<button type="summit">검색^^</button>
 				</form>

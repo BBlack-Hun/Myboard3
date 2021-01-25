@@ -1,6 +1,7 @@
 package com.mayfarm.ES.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -35,11 +36,9 @@ public class EsController {
 		
 		// 파라미터의 유무에 따라 나눠짐. (전체 검색 or 파라미터를 이용한 검색)
 		if (str != "" && str != null) {
-			System.out.println("난 데이터를 가지고 있다. " + str);
 			// 반환된 리스트..
 			hits = (ArrayList<Map<String, Object>>) service.GET(str);
 		} else {
-			System.out.println("난 데이터를 가지고 있지 않지...");
 			hits = (ArrayList<Map<String, Object>>) service.GET();
 		}
 		
@@ -51,8 +50,13 @@ public class EsController {
 	
 	// 게시물 세부 정보
 	@RequestMapping(value="/read", method=RequestMethod.GET)
-	public String read(Model model) throws Exception {
+	public String read(Model model, int no) throws Exception {
 		logger.info("elastic read");
+		
+		Map<String, Object> hit = service.READ(no);
+		
+		model.addAttribute("read", hit);
+		
 		
 		return "/elastic/read";
 	}
