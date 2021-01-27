@@ -28,57 +28,113 @@
 	<div class="block block-rounded">
 		<div class="block-content">
 			<div class="table-responsive">
-				<form method="GET">
-					<label>검색하고 싶은 것을 입력하세요 ㅎㅎ</label>
-					<input type="text" name="str">
-					<button type="summit">검색^^</button>
-				</form>
-				<table class="table table-sm table-vcenter">
-					<thead>
-						<tr>
-							<th class="text-center" style="width:50px;"><a href="javascript:void(0)" class="all-check">#</a></th>
-							<th style="width: 10%">통장 번호</th>
-							<th class="text-center" style="width: 35%">성</th>
-							<th style="width: 15%">이름</th>
-							<th style="width: 15%">잔고</th>
-							<th style="width: 15%">이메일</th>
-							<th style="width: 10%">사는 곳</th>
-						</tr>
-					</thead>
-					<div class="mb-3 d-flex">
-						<div class="ml-auto">
-							<button type="button" class="btn btn-primary" id="listAddBtn" onclick="">글쓰기</button>
-							<button type="button" class="btn btn-danger" onclick="">삭제</button>
-						</div>
+				<form  class="search-container" method="get">
+					<label>통합검색</label>
+					<input type="text" name="search" id="search-bar" placeholder="검색어를 입력하세요.">
+					<button type="submit">검색</button>
+					<button type="button">상세검색</button>
+					<div>
+						<c:choose>
+							<c:when test="${re != index.on}">
+								<label>
+									<input type="checkbox" id="re" name="re" class="input_hide" checked><span> 결과 내 재검색</span>
+								</label>
+							</c:when>
+							<c:otherwise>
+								<label>
+									<input type="checkbox" id="re" name="re" class="input_hide"><span> 결과 내 재검색</span>
+								</label>
+							</c:otherwise>
+						</c:choose>
 					</div>
-					<tbody>
-						<c:forEach items="${elastic}" var = "list">
-							<tr>
-								<td class="text-center">
-									<div class="custom-control custom-ckeckbox mb-1">
-										<input type="checkbox" class="custom-control-input" id="${list.index }" name="dict-checkbox">
-										<label class="custom-control-label" for="id"></label>
+					<c:if test="${index.len > 0 }">
+						<span class="lead">"${index.str}"에 대한 검색 결과 <strong>(총<c:out value="${index.len}"/>건)</strong></span>
+					</c:if>
+				</form>
+				<c:choose>
+					<c:when test="${!empty index.elastic}">
+						<div>
+							<div>
+								<strong class="lead">JTBC</strong>
+								<c:forEach items="${index.JTBC}" var="jtbc">
+									<div>
+										<hr />
+										<label for="title" class="col-sm-1 control-label">기사번호</label>
+										<p><c:out value="${jtbc.no}" /></p>
+										<label for="title" class="col-sm-1 control-label">제목</label>
+										<p>
+											<a href="read?no=${jtbc.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}"><c:out value="${jtbc.violt_cas_nm}" /></a>
+										</p>
+										<label for="title" class="col-sm-1 control-label">내용</label>
+										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;"><c:out value="${jtbc.violt_cas_cn}" /></p>
+										<label for="title" class="col-sm-1 control-label">게시날짜</label>
+										<p><fmt:formatDate value="${jtbc.date}" pattern="yyyy-MM-dd"/></p>
+										
 									</div>
-								</td>
-								<td>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${list.account_number}" /></td>
-								<td>
-									<a href="read?no=${list.account_number}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}"><c:out value="${list.firstname}" /></a>
-								</td>
-								<td><c:out value="${list.lastname}" /></td>
-								<td><c:out value="${list.balance}"  /></td>
-								<td><c:out value="${list.email}"  /></td>
-								<td>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${list.city}" /></td>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
-				<hr>
+								</c:forEach>
+							<hr />
+							</div>
+							<div>
+								<strong class="lead">KBS</strong>
+								<c:forEach items="${index.KBS}" var="kbs">
+									<div>
+										<hr />
+										<label for="title" class="col-sm-1 control-label">번호</label>
+										<p><c:out value="${kbs.no}" /></p>
+										<label for="title" class="col-sm-1 control-label">제목</label>
+										<p>
+											<a href="read?no=${kbs.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}"><c:out value="${kbs.violt_cas_nm}" /></a>
+										</p>
+										<label for="title" class="col-sm-1 control-label">내용</label>
+										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;"><c:out value="${kbs.violt_cas_cn}" /></p>
+										<label for="title" class="col-sm-1 control-label">게시날짜</label>
+										<p><fmt:formatDate value="${kbs.date}" pattern="yyyy-MM-dd"/></p>
+									</div>
+								</c:forEach>
+							<hr />
+							</div>
+							<div>
+								<strong class="lead">MBC</strong>
+								<c:forEach items="${index.MBC}" var="mbc">
+									<div>
+										<hr />
+										<label for="title" class="col-sm-1 control-label">번호</label>
+										<p><c:out value="${mbc.no}" /></p>
+										<label for="title" class="col-sm-1 control-label">제목</label>
+										<p>
+											<a href="read?no=${mbc.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}"><c:out value="${mbc.violt_cas_nm}" /></a>
+										</p>
+										<label for="title" class="col-sm-1 control-label">내용</label>
+										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;"><c:out value="${mbc.violt_cas_cn}" /></p>
+										<label for="title" class="col-sm-1 control-label">게시날짜</label>
+										<p><fmt:formatDate value="${mbc.date}" pattern="yyyy-MM-dd"/></p>
+										
+									</div>
+								</c:forEach>
+							<hr />
+							</div>
+						</div>
+					</c:when>
+					
+					<c:otherwise>
+						<div class="subContSec">
+							<div class="searchResult">
+								<strong>검색어를 입력해주세요</strong>
+								<div class="txtBox">
+									<p>· 찾고자하는 검색어를 입력하시고, 검색버튼을 눌러주세요.</p>
+									<a href="index" class="btn_ty3">이전 페이지 돌아가기</a>
+								</div>
+							</div>
+						</div>
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</div>
 	</div>
 </div>
 <!-- END Page Content -->
 <!-- Script -->
+
 
 <!-- footer include -->                
 <%@include file="../include/footer.jsp" %>

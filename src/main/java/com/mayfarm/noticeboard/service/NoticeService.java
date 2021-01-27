@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
+import com.mayfarm.freeboard.vo.Criteria;
 import com.mayfarm.noticeboard.dao.NoticeDAO;
 import com.mayfarm.noticeboard.vo.NoticeVO;
 
@@ -23,5 +24,9 @@ public class NoticeService {
 	public List<NoticeVO> list() throws Exception {
 		System.out.println("dao에게 명령어 전달!");
 		return dao.list();
+	}
+	
+	public Integer totalCnt(Criteria cri) throws Exception {
+		return dao.totalCnt(cri);
 	}
 }

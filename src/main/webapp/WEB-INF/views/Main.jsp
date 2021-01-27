@@ -31,7 +31,7 @@
                                         <small><i class="si si-calendar"></i> Today</small>
                                     </div>
                                     <div class="font-s12 font-w700">공지사항 글 갯수</div>
-                                    <a class="h2 font-w300 text-primary" href="notice/index" data-toggle="countTo" data-to="1"></a>
+                                    <a class="h2 font-w300 text-primary" href="notice/index" data-toggle="countTo" data-to="${noticecnt}"></a>
                                 </div>
                             </div>
                         </div>
@@ -70,7 +70,8 @@
                         </div>
                     </div>
                     <!-- END Stats -->
-
+                    
+                    <!-- search  -->
                     <!-- Dashboard Charts -->
                     <div class="row">
                         <div class="col-md-6">

@@ -133,7 +133,7 @@
                     </li>
 				</ul>
 				<!-- END Left Session -->
-			
+				
 				<!-- Right Session -->
 				<ul class="nav-header pull-right">
 					<li>

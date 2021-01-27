@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.mayfarm.freeboard.vo.Criteria;
 import com.mayfarm.noticeboard.vo.NoticeVO;
 
 @Repository
@@ -20,5 +21,9 @@ public class NoticeDAO {
 		System.out.println("sql에서 명령문을 실행");
 		
 		return sql.selectList("noticeMapper.list");
+	}
+	
+	public Integer totalCnt(Criteria cri) throws Exception {
+		return sql.selectOne("noticeMapper.totalCnt", cri);
 	}
 }

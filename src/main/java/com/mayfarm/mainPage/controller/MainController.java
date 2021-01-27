@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.mayfarm.freeboard.service.BoardService;
 import com.mayfarm.freeboard.vo.BoardVO;
 import com.mayfarm.freeboard.vo.Criteria;
+import com.mayfarm.noticeboard.service.NoticeService;
 
 @Controller
 public class MainController {
@@ -21,11 +22,15 @@ public class MainController {
 	@Inject
 	private BoardService Bservice;
 	
+	@Inject
+	private NoticeService Nservice;
+	
 	@RequestMapping(value="/Main", method=RequestMethod.GET)
 	public String Main(Model model, Criteria cri) throws Exception {
 		logger.info("welcome Main");
 		
 		model.addAttribute("boardcnt", Bservice.totalCnt(cri));
+		model.addAttribute("noticecnt", Nservice.totalCnt(cri));
 		
 		return "Main";
 		

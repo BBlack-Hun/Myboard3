@@ -31,24 +31,22 @@
 			<hr />
 				<section id="container">
 					<div class="form-group">
-						<label for="title" class="col-sm-2 control-label">성</label>
-						<input type="text" class="form-control" value="${read.firstname}" readonly="readonly"/>
+						<label for="title" class="col-sm-2 control-label">제목</label>
+						<input type="text" class="form-control" value="${read.violt_cas_nm}" readonly="readonly"/>
 					</div>
 					<div class="form-group">	
-						<label for="content" class="col-sm-2 control-label">이름</label>
-						<textarea id="content" name="content" class="form-control" readonly="readonly" ><c:out value="${read.lastname}" /></textarea>
+						<label for="content" class="col-sm-2 control-label">내용</label>
+						<textarea id="content" name="content" class="form-control" readonly="readonly" ><c:out value="${read.violt_cas_cn}" /></textarea>
 					</div>
 					<div class="form-group">
-						<label for="writer" class="col-sm-2 control-label">이메일</label>
-						<input type="text" id="writer" name="writer" value="${read.email}" class="form-control" readonly="readonly" />
+						<label for="writer" class="col-sm-2 control-label">작성일</label>
+						<input type="text" id="writer" name="writer" value="${read.date}" class="form-control" readonly="readonly" />
 					</div>
 				</section>
 			<br />
 			<hr />
 			<div class="mb-3 d-flex">
 				<div class="ml-auto">
-					<a href="#" class="btn btn-warning">수정</a>
-					<button id="btn-remove" class="btn btn-danger">삭제</button>
 					<a href="index" class="btn btn-primary">목록</a>
 				</div>
 			</div>
@@ -61,7 +59,7 @@
 <script type="text/javascript">
 	// 목록
 	$(".list_btn").on("click", function(){
-		location.href = "index";
+		location.href = "index?search="+"${str}";
 	})
 </script>
 

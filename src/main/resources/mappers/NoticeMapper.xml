@@ -22,4 +22,11 @@
 	
 	</select>
 	
+	<!-- 게시물 총 갯수 -->
+	<select id = "totalCnt" resultType="int">
+		SELECT COUNT(Nno)
+		FROM mynotice
+		WHERE Nno > 0;
+	</select>
+	
 </mapper>
