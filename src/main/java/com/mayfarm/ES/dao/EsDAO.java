@@ -51,38 +51,6 @@ public class EsDAO {
 	 */
 	public MultiSearchResponse TGET(String str, Criteria cri) throws IOException {
 		
-		// 페이지네이션
-		int page = cri.getPage();
-		int listSize = cri.getPerPageNum();
-		int from = (page == 1) ? 0 : listSize * (page - 1);
-		// 데이터를 반환활 리스트 선언
-		List<EsVO> json = new ArrayList<EsVO>();
-		
-		// 엘라스틱 서치 초기화
-		SearchRequest searchRequest = new SearchRequest("data");
-		SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-		
-		// bool쿼리 선언
-		BoolQueryBuilder query = QueryBuilders.boolQuery();
-		
-		// 이하 검색할 테이블을 선언하여 bool 쿼리에 넣음.
-		// 제목
-		MatchQueryBuilder firstname = QueryBuilders.matchQuery("violt_cas_nm", str);
-		query.should(firstname);
-		
-		// 내용
-		MatchQueryBuilder lastname = QueryBuilders.matchQuery("violt_cas_cn", str);
-		query.should(lastname);
-		
-		// 카테고리 (해당 카테고리에서만 검색을 원할경우)
-//		if(category !=null && category.trim().equals("") ) {
-//			TermQueryBuilder termQueryBuilder = QueryBuilders.termQuery("violt_ctgr_cd_nm", category);
-//			query.must(termQueryBuilder);
-//			MatchQueryBuilder category = QueryBuilders.matchQuery("violt_ctgr_cd_nm", str);
-//			query.should(category);
-//		}
-		
-		
 		// 통합검색을 위한 Multisearch 초기화
 		MultiSearchRequest multiSarRequest = new MultiSearchRequest();
 		
@@ -92,26 +60,19 @@ public class EsDAO {
 		SearchRequest searchRequst_mbc = getMbcRequest(cri, str);
 		
 		
+		// 카테고리 (해당 카테고리에서만 검색을 원할경우)
+//		if(category !=null && category.trim().equals("") ) {
+//			TermQueryBuilder termQueryBuilder = QueryBuilders.termQuery("violt_ctgr_cd_nm", category);
+//			query.must(termQueryBuilder);
+//			MatchQueryBuilder category = QueryBuilders.matchQuery("violt_ctgr_cd_nm", str);
+//			query.should(category);
+//		}
 		
-		
-//		sourceBuilder.query(query);
-//		sourceBuilder.sort(new FieldSortBuilder("date").order(SortOrder.ASC));
-//		sourceBuilder.from(from);
-//		sourceBuilder.size(listSize);	// Default 10개
-//		System.out.println(sourceBuilder.toString());
-//		searchRequest.source(sourceBuilder);
+
 		multiSarRequest.add(searchRequst_jtbc);
 		multiSarRequest.add(searchRequst_kbs);
 		multiSarRequest.add(searchRequst_mbc);
 		return restClient.msearch(multiSarRequest, RequestOptions.DEFAULT);
-//		SearchHit[] hits = response.getHits().getHits();
-		
-//		for (SearchHit hit : hits) {
-//			EsVO esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
-//			json.add(esVO);
-//		}
-//		return json;
-		
 	}
 	
 	private SearchRequest getJtbcRequest(Criteria cri, String str) {
@@ -135,8 +96,12 @@ public class EsDAO {
 		MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("violt_cas_nm", str);
 		boolQueryBuilder.should(matchQueryBuilder);
 		
+		// Content
 		MatchQueryBuilder matchQueryBuilder2 = QueryBuilders.matchQuery("violt_cas_cn", str);
 		boolQueryBuilder.should(matchQueryBuilder2);
+		
+		// 정렬 ( 이름순으로 정렬)
+		searchSourceBuilder.sort(new FieldSortBuilder("no").order(SortOrder.ASC));
 		
 		searchSourceBuilder.query(boolQueryBuilder);
 		searchSourceBuilder.from(from);
@@ -167,8 +132,12 @@ private SearchRequest getKbsRequest(Criteria cri, String str) {
 		MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("violt_cas_nm", str);
 		boolQueryBuilder.should(matchQueryBuilder);
 		
+		// Content
 		MatchQueryBuilder matchQueryBuilder2 = QueryBuilders.matchQuery("violt_cas_cn", str);
 		boolQueryBuilder.should(matchQueryBuilder2);
+		
+		// 정렬 ( 번호순 정렬)
+		searchSourceBuilder.sort(new FieldSortBuilder("no").order(SortOrder.ASC));
 		
 		searchSourceBuilder.query(boolQueryBuilder);
 		searchSourceBuilder.from(from);
@@ -199,8 +168,12 @@ private SearchRequest getMbcRequest(Criteria cri, String str) {
 	MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("violt_cas_nm", str);
 	boolQueryBuilder.should(matchQueryBuilder);
 	
+	// Content
 	MatchQueryBuilder matchQueryBuilder2 = QueryBuilders.matchQuery("violt_cas_cn", str);
 	boolQueryBuilder.should(matchQueryBuilder2);
+	
+	// 정렬 ( 이름순으로 정렬)
+	searchSourceBuilder.sort(new FieldSortBuilder("no").order(SortOrder.ASC));
 	
 	searchSourceBuilder.query(boolQueryBuilder);
 	searchSourceBuilder.from(from);

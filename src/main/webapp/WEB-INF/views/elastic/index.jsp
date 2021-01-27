@@ -53,6 +53,7 @@
 				</form>
 				<c:choose>
 					<c:when test="${!empty index.elastic}">
+						검색 -> 검색 Map -> view
 						<div>
 							<div>
 								<strong class="lead">JTBC</strong>

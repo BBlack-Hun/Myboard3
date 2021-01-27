@@ -31,7 +31,6 @@ public class EsService {
 	public Map<String,Object> TGET(String str, Criteria cri) throws IOException {
 		
 		// 검색 결과 갯수
-		int len = 0;
 		
 		// 반환을 위한 Map
 		Map<String, Object> returnMap = new HashMap<String, Object>();
@@ -48,28 +47,33 @@ public class EsService {
 		
 		// 결과 정제_JTBC
 		List<EsVO> list_jtbc = new ArrayList<EsVO>();
-		for (SearchHit hit : searchResponse_kbs.getHits().getHits()) {
-			EsVO esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
-			list_jtbc.add(esVO);
-			len++;
-		}
-		List<EsVO> list_kbs = new ArrayList<EsVO>();
 		for (SearchHit hit : searchResponse_jtbc.getHits().getHits()) {
 			EsVO esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
-			list_kbs.add(esVO);
-			len++;
+			list_jtbc.add(esVO);
 		}
+		// 결과 정제_KBS
+		List<EsVO> list_kbs = new ArrayList<EsVO>();
+		for (SearchHit hit : searchResponse_kbs.getHits().getHits()) {
+			EsVO esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
+			list_kbs.add(esVO);
+		}
+		// 결과 정제_MBC
 		List<EsVO> list_mbc = new ArrayList<EsVO>();
 		for (SearchHit hit : searchResponse_mbc.getHits().getHits()) {
 			EsVO esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
 			list_mbc.add(esVO);
-			len++;
+		}
+		// 전체 검색 결과 수
+		long total = 0;
+		for (Item item : items) {
+			SearchResponse response = item.getResponse();
+			total += response.getHits().getTotalHits().value;
 		}
 		
 		returnMap.put("JTBC", list_jtbc);
 		returnMap.put("KBS", list_kbs);
 		returnMap.put("MBC", list_mbc);
-		returnMap.put("len", len);
+		returnMap.put("total", total);
 		return returnMap;
 	}
 	

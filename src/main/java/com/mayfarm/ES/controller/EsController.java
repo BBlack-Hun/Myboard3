@@ -69,7 +69,7 @@ public class EsController {
 					modelMap.put("KBS", AList.get("KBS"));
 					
 					modelMap.put("elastic", AList);
-					modelMap.put("len", AList.get("len"));
+					modelMap.put("len", AList.get("total"));
 				}
 			} else {
 				List<String> oss = new ArrayList<String>();
