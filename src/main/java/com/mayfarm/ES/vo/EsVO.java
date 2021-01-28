@@ -17,6 +17,6 @@ public class EsVO {
 	private String violt_cas_cn;
 	private String violt_ctgr_cd_nm;
 	private String violt_ctgr_cd;
-	private Date date;	
-
+	private String date;	
+	
 }

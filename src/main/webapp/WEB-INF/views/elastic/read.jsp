@@ -47,7 +47,7 @@
 			<hr />
 			<div class="mb-3 d-flex">
 				<div class="ml-auto">
-					<a href="index" class="btn btn-primary">목록</a>
+					<a href="index" class="btn btn-primary">검색창으로</a>
 				</div>
 			</div>
 			
@@ -59,7 +59,7 @@
 <script type="text/javascript">
 	// 목록
 	$(".list_btn").on("click", function(){
-		location.href = "index?search="+"${str}";
+		location.href = "index";
 	})
 </script>
 

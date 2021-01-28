@@ -29,31 +29,57 @@
 		<div class="block-content">
 			<div class="table-responsive">
 				<form  class="search-container" method="get">
-					<label>통합검색</label>
-					<input type="text" name="search" id="search-bar" placeholder="검색어를 입력하세요.">
-					<button type="submit">검색</button>
-					<button type="button">상세검색</button>
-					<div>
-						<c:choose>
-							<c:when test="${re != index.on}">
-								<label>
-									<input type="checkbox" id="re" name="re" class="input_hide" checked><span> 결과 내 재검색</span>
-								</label>
-							</c:when>
-							<c:otherwise>
-								<label>
-									<input type="checkbox" id="re" name="re" class="input_hide"><span> 결과 내 재검색</span>
-								</label>
-							</c:otherwise>
-						</c:choose>
-					</div>
-					<c:if test="${index.len > 0 }">
-						<span class="lead">"${index.str}"에 대한 검색 결과 <strong>(총<c:out value="${index.len}"/>건)</strong></span>
-					</c:if>
+					<c:choose>
+						<c:when test="${index.str ne '' }">
+							<label>통합검색</label>
+							<input type="text" name="search" id="search-bar" value="${index.str}" placeholder="검색어를 입력하세요.">
+							<button type="submit">검색</button>
+							<button type="button">상세검색</button>
+							<div>
+								<c:choose>
+									<c:when test="${index.on ne null}">
+										<label>
+											<input type="checkbox" id="re" name="re" class="input_hide" checked><span> 결과 내 재검색</span>
+										</label>
+									</c:when>
+									<c:when test="${index.on eq null}">
+										<label>
+											<input type="checkbox" id="re" name="re" class="input_hide"><span> 결과 내 재검색</span>
+										</label>
+									</c:when>
+								</c:choose>
+							</div>
+							<c:if test="${index.len > 0 }">
+								<span class="lead">"${index.str}"에 대한 검색 결과 <strong>(총<c:out value="${index.len}"/>건)</strong></span>
+							</c:if>
+						</c:when>
+						<c:otherwise>
+							<label>통합검색</label>
+							<input type="text" name="search" id="search-bar" placeholder="검색어를 입력하세요.">
+							<button type="submit">검색</button>
+							<button type="button">상세검색</button>
+							<div>
+								<c:choose>
+									<c:when test="${re != index.on}">
+										<label>
+											<input type="checkbox" id="re" name="re" class="input_hide" checked><span> 결과 내 재검색</span>
+										</label>
+									</c:when>
+									<c:otherwise>
+										<label>
+											<input type="checkbox" id="re" name="re" class="input_hide"><span> 결과 내 재검색</span>
+										</label>
+									</c:otherwise>
+								</c:choose>
+							</div>
+							<c:if test="${index.len > 0 }">
+								<span class="lead">"${index.str}"에 대한 검색 결과 <strong>(총<c:out value="${index.len}"/>건)</strong></span>
+							</c:if>
+						</c:otherwise>
+					</c:choose>
 				</form>
 				<c:choose>
-					<c:when test="${!empty index.elastic}">
-						검색 -> 검색 Map -> view
+					<c:when test="${index.len > 0}">
 						<div>
 							<div>
 								<strong class="lead">JTBC</strong>
@@ -64,15 +90,19 @@
 										<p><c:out value="${jtbc.no}" /></p>
 										<label for="title" class="col-sm-1 control-label">제목</label>
 										<p>
-											<a href="read?no=${jtbc.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}"><c:out value="${jtbc.violt_cas_nm}" /></a>
+											<a href="read?no=${jtbc.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}">${jtbc.violt_cas_nm}</a>
 										</p>
 										<label for="title" class="col-sm-1 control-label">내용</label>
-										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;"><c:out value="${jtbc.violt_cas_cn}" /></p>
+										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;">${jtbc.violt_cas_cn}</p>
 										<label for="title" class="col-sm-1 control-label">게시날짜</label>
-										<p><fmt:formatDate value="${jtbc.date}" pattern="yyyy-MM-dd"/></p>
-										
+<%-- 										<p><fmt:formatDate value="${jtbc.date}" pattern="yyyy-MM-dd"/></p> --%>
+<%-- 										<fmt:parseDate value="${jtbc.date}" var="date" pattern="yyyyMMdd"/> --%>
+											<p><c:out value="${jtbc.date}" /></p>
 									</div>
 								</c:forEach>
+								<c:if test="${index.jlen > 4 }">
+									<a href="#" value="JTBC" class="valueMore" onclick="pageSubmitFn(${jtbc.violt_ctgr_cd_nm})"><span>JTBC 기사 더보기</span></a>
+								</c:if>
 							<hr />
 							</div>
 							<div>
@@ -84,14 +114,18 @@
 										<p><c:out value="${kbs.no}" /></p>
 										<label for="title" class="col-sm-1 control-label">제목</label>
 										<p>
-											<a href="read?no=${kbs.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}"><c:out value="${kbs.violt_cas_nm}" /></a>
+											<a href="read?no=${kbs.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}">${kbs.violt_cas_nm}</a>
 										</p>
 										<label for="title" class="col-sm-1 control-label">내용</label>
-										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;"><c:out value="${kbs.violt_cas_cn}" /></p>
+										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;">${kbs.violt_cas_cn}</p>
 										<label for="title" class="col-sm-1 control-label">게시날짜</label>
-										<p><fmt:formatDate value="${kbs.date}" pattern="yyyy-MM-dd"/></p>
+										<p>${kbs.date}</p>
+										
 									</div>
 								</c:forEach>
+								<c:if test="${index.klen > 4 }">
+									<input type="button" value="KBS 기사 더보기" name="KBS" onclick="location.href='KBS'">
+								</c:if>
 							<hr />
 							</div>
 							<div>
@@ -103,27 +137,53 @@
 										<p><c:out value="${mbc.no}" /></p>
 										<label for="title" class="col-sm-1 control-label">제목</label>
 										<p>
-											<a href="read?no=${mbc.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}"><c:out value="${mbc.violt_cas_nm}" /></a>
+											<a href="read?no=${mbc.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}">${mbc.violt_cas_nm}</a>
 										</p>
 										<label for="title" class="col-sm-1 control-label">내용</label>
-										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;"><c:out value="${mbc.violt_cas_cn}" /></p>
+										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;">${mbc.violt_cas_cn}</p>
 										<label for="title" class="col-sm-1 control-label">게시날짜</label>
-										<p><fmt:formatDate value="${mbc.date}" pattern="yyyy-MM-dd"/></p>
+										<p>${mbc.date}</p>
 										
 									</div>
 								</c:forEach>
+								<c:if test="${index.mlen > 4 }">
+									<input type="button" value="MBC 기사 더보기" name="MBC" onclick="location.href='MBC'">
+								</c:if>
 							<hr />
 							</div>
 						</div>
 					</c:when>
-					
-					<c:otherwise>
+					<c:when test="${!empty index.str and index.len eq 0}">
+						<div class="subContSec">
+							<div class="searchResult">
+								<strong><c:out value="${index.str }"/>에 대한 검색결과가 없습니다.</strong>
+								<div class="txtBox">
+									<p>· 단어의 철자가 정확한지 확인해보세요.</p>
+									<p>· 검색어가 바르게 입력 되었는지 확인해 보세요</p>
+									<p>· 비슷한 단어로 다시 검색해보세요.</p>
+									<p>· 검색 옵션을 변경해서 다시 검색해 보세요.(미구현)</p>
+									<a href="index" class="btn_ty3">이전 페이지 돌아가기</a>
+								</div>
+							</div>
+						</div>
+					</c:when>
+					<c:when test="${index.str eq '' }">
 						<div class="subContSec">
 							<div class="searchResult">
 								<strong>검색어를 입력해주세요</strong>
 								<div class="txtBox">
 									<p>· 찾고자하는 검색어를 입력하시고, 검색버튼을 눌러주세요.</p>
 									<a href="index" class="btn_ty3">이전 페이지 돌아가기</a>
+								</div>
+							</div>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div class="subContSec">
+							<div class="searchResult">
+								<strong>검색어를 입력해주세요.</strong>
+								<div class="txtBox">
+									<p>찾고자하는 검색어를 입력하시고, 검색버튼을 눌러주세요.</p>
 								</div>
 							</div>
 						</div>
@@ -135,7 +195,15 @@
 </div>
 <!-- END Page Content -->
 <!-- Script -->
-
+<script>
+	var pageSubmitFn = function("Category"){
+		if (Category === "jtbc") {
+			location.href = "JTBC?serach=" + "${index.str}";
+		} else {
+			alert("왜 안돼??");
+		}
+	}
+</script>
 
 <!-- footer include -->                
 <%@include file="../include/footer.jsp" %>

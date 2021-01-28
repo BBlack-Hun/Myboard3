@@ -1,18 +1,24 @@
 package com.mayfarm.ES.service;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.elasticsearch.action.delete.DeleteResponse;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.MultiSearchResponse.Item;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.text.Text;
 import org.elasticsearch.search.SearchHit;
+
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -23,14 +29,21 @@ import com.mayfarm.ES.vo.EsVO;
 @Service
 public class EsService {
 	
+	private static final int Map = 0;
+
 	@Inject
 	private EsDAO dao;
 	
 	Gson gson = new Gson();
-
-	public Map<String,Object> TGET(String str, Criteria cri) throws IOException {
-		
-		// 검색 결과 갯수
+	/**
+	 * 통합 검색 서비스
+	 * 검색 DAO 호출 및 하이라이트 처리, 검색결과 반환
+	 * @param str
+	 * @param cri
+	 * @return
+	 * @throws IOException
+	 */
+	public Map<String,Object> TGET(String[] str, Criteria cri) throws IOException {
 		
 		// 반환을 위한 Map
 		Map<String, Object> returnMap = new HashMap<String, Object>();
@@ -46,21 +59,31 @@ public class EsService {
 		SearchResponse searchResponse_mbc = items[2].getResponse();
 		
 		// 결과 정제_JTBC
-		List<EsVO> list_jtbc = new ArrayList<EsVO>();
+		List<Map<String, Object>> list_jtbc = new ArrayList<Map<String, Object>>();
+		EsVO esVO = new EsVO();
 		for (SearchHit hit : searchResponse_jtbc.getHits().getHits()) {
-			EsVO esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
-			list_jtbc.add(esVO);
+			// 기존 문장에 highlight를 씌운 태그를 덧 씌운다.
+			Map<String, Object> hhit = coverHighLightFields(hit);
+			
+//			esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
+			list_jtbc.add(hhit);
 		}
 		// 결과 정제_KBS
 		List<EsVO> list_kbs = new ArrayList<EsVO>();
 		for (SearchHit hit : searchResponse_kbs.getHits().getHits()) {
-			EsVO esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
+			
+			esVO = coverHighLightFields2(hit);
+			
+//			esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
 			list_kbs.add(esVO);
 		}
 		// 결과 정제_MBC
 		List<EsVO> list_mbc = new ArrayList<EsVO>();
 		for (SearchHit hit : searchResponse_mbc.getHits().getHits()) {
-			EsVO esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
+			
+			esVO = coverHighLightFields2(hit);
+			
+//			esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
 			list_mbc.add(esVO);
 		}
 		// 전체 검색 결과 수
@@ -70,6 +93,21 @@ public class EsService {
 			total += response.getHits().getTotalHits().value;
 		}
 		
+		// JTBC 결과 수
+		long jtotal = 0;
+		SearchResponse jresponse = items[0].getResponse();
+		jtotal += jresponse.getHits().getTotalHits().value;
+		
+		// KBS 결과 수
+		long ktotal = 0;
+		SearchResponse kresponse = items[0].getResponse();
+		ktotal += kresponse.getHits().getTotalHits().value;
+		
+		// MBC 결과 수
+		long mtotal = 0;
+		SearchResponse mresponse = items[0].getResponse();
+		mtotal += mresponse.getHits().getTotalHits().value;
+		
 		returnMap.put("JTBC", list_jtbc);
 		returnMap.put("KBS", list_kbs);
 		returnMap.put("MBC", list_mbc);
@@ -77,9 +115,116 @@ public class EsService {
 		return returnMap;
 	}
 	
-	public List<EsVO> AGET(List<String> oss) throws IOException {
-		return dao.GET(oss);
+	/**
+	 * JTBC 기사 카테고리 검색 서비스
+	 * JTBC 기사 검색 DAO 호출 및 하이라이트 처리, 검색 결과 반환
+	 * @param str
+	 * @param cri
+	 * @return JTBC 기사 검색결과
+	 * @throws IOException
+	 */
+	public Map<String,Object> JGET(String[] str, Criteria cri) throws IOException {
+		
+		// 반환을 위한 Map
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		
+		//
+		SearchResponse searchResponse = dao.JGET(str, cri);
+		// 결과 정제_JTBC
+		List<Map<String, Object>> list_jtbc = new ArrayList<Map<String, Object>>();
+		EsVO esVO = new EsVO();
+		for (SearchHit hit : searchResponse.getHits().getHits()) {
+			// 기존 문장에 highlight를 씌운 태그를 덧 씌운다.
+			Map<String, Object> hhit = coverHighLightFields(hit);
+			
+//			esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
+			list_jtbc.add(hhit);
+		}
+		
+		long total = searchResponse.getHits().getTotalHits().value;
+		
+		returnMap.put("total", total);
+		returnMap.put("JTBC", list_jtbc);
+
+		return returnMap;
 	}
+	
+	/**
+	 * KBS 기사 카테고리 검색 서비스
+	 * KBS 기사 검색 DAO 호출 및 하이라이트 처리, 검색 결과 반환
+	 * @param str
+	 * @param cri
+	 * @return KBS 기사 검색 결과
+	 * @throws IOException
+	 */
+	public Map<String,Object> KGET(String[] str, Criteria cri) throws IOException {
+		
+		// 반환을 위한 Map
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		
+		//
+		SearchResponse searchResponse = dao.KGET(str, cri);
+		// 결과 정제_KBS
+		List<Map<String, Object>> list_ktbc = new ArrayList<Map<String, Object>>();
+		EsVO esVO = new EsVO();
+		for (SearchHit hit : searchResponse.getHits().getHits()) {
+			// 기존 문장에 highlight를 씌운 태그를 덧 씌운다.
+			Map<String, Object> hhit = coverHighLightFields(hit);
+			
+//			esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
+			list_ktbc.add(hhit);
+		}
+		
+		long total = searchResponse.getHits().getTotalHits().value;
+		
+		returnMap.put("total", total);
+		returnMap.put("KBS", list_ktbc);
+
+		return returnMap;
+	}
+	
+	/**
+	 * MBC 기사 카테고리 검색 서비스
+	 * MBC 기사 검색 DAO 호출 및 하이라이트 처리, 검색 결과 반환
+	 * @param str
+	 * @param cri
+	 * @return MBC 기사 검색 결과
+	 * @throws IOException
+	 */
+	public Map<String,Object> MGET(String[] str, Criteria cri) throws IOException {
+		
+		// 반환을 위한 Map
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		
+		//
+		SearchResponse searchResponse = dao.MGET(str, cri);
+		// 결과 정제_MBC
+		List<Map<String, Object>> list_mtbc = new ArrayList<Map<String, Object>>();
+		EsVO esVO = new EsVO();
+		for (SearchHit hit : searchResponse.getHits().getHits()) {
+			// 기존 문장에 highlight를 씌운 태그를 덧 씌운다.
+			Map<String, Object> hhit = coverHighLightFields(hit);
+			
+//			esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
+			list_mtbc.add(hhit);
+		}
+		
+		long total = searchResponse.getHits().getTotalHits().value;
+		
+		returnMap.put("total", total);
+		returnMap.put("MBC", list_mtbc);
+
+		return returnMap;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	public Map<String, Object> READ(int no) throws IOException {
 				
@@ -95,5 +240,48 @@ public class EsService {
 	
 	public void DELETE(String targetIndex) throws IOException {
 		dao.DELETE(targetIndex);
+	}
+	
+	public Map<String, Object> coverHighLightFields(SearchHit hit) {
+		// json형태의 hit을 map형태로 변환
+		Map<String, Object> sourceMap = hit.getSourceAsMap();
+		// 포팅을 위한 선언
+		EsVO esVO = new EsVO();
+		// 이때 sourceMap은 Map 형태임...
+		// hit에서 highlight 필드에서 태그만 출력
+		for (String field : hit.getHighlightFields().keySet()) {
+			HighlightField highlightField = hit.getHighlightFields().get(field);
+			Text[] texts = highlightField.getFragments();
+			String value = texts[0].string();
+			// 해당하는 필드가 있으면, sourceMap의 필드와 교체
+			sourceMap.put(field, value);
+		}
+		return sourceMap;
+		
+	}
+	
+	public EsVO coverHighLightFields2(SearchHit hit) {
+		// json형태의 hit을 map형태로 변환
+		Map<String, Object> sourceMap = hit.getSourceAsMap();
+		// 포팅을 위한 선언
+		EsVO esVO = new EsVO();
+		// 이때 sourceMap은 Map 형태임...
+		// hit에서 highlight 필드에서 태그만 출력
+		for (String field : hit.getHighlightFields().keySet()) {
+			HighlightField highlightField = hit.getHighlightFields().get(field);
+			Text[] texts = highlightField.getFragments();
+			String value = texts[0].string();
+			// 해당하는 필드가 있으면, sourceMap의 필드와 교체
+			sourceMap.put(field, value);
+		}
+		esVO.setNo(sourceMap.get("no").toString());
+		esVO.setViolt_cas_nm(sourceMap.get("violt_cas_nm").toString());
+		esVO.setViolt_cas_cn(sourceMap.get("violt_cas_cn").toString());
+		esVO.setViolt_ctgr_cd(sourceMap.get("violt_ctgr_cd").toString());
+		esVO.setViolt_ctgr_cd_nm(sourceMap.get("violt_ctgr_cd_nm").toString());
+		esVO.setDate(sourceMap.get("date").toString());
+
+		return esVO;
+		
 	}
 }

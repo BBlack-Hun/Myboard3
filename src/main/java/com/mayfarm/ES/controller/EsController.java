@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mayfarm.ES.service.EsService;
 import com.mayfarm.ES.vo.Criteria;
@@ -30,10 +31,17 @@ public class EsController {
 	
 	@Inject
 	private EsService service;
+	
+	// 결과 내 재검색을 위한 전역변수 선언
+	// 결과 내 재검색을 위한 리스트 선언
+	List<String> rList = new ArrayList<String>();
+
+	// 결과내 재검색을 위한 String 배열 선언
+	String[] str = new String[10];
 		
 	//게시판 목록
 	@RequestMapping(value="/index", method=RequestMethod.GET)
-	public String index(Model model, HttpServletRequest request, Criteria cri) throws Exception {
+	public String index(Model model, HttpServletRequest request, Criteria cri, RedirectAttributes rttr) throws Exception {
 		// 로그 출력
 		logger.info("elastic Search page");
 		
@@ -43,42 +51,78 @@ public class EsController {
 		// 한번에 값을 넘기기 위해, Map에 저장해 둔다.
 		Map<String, Object> modelMap = new HashMap<String, Object>();
 		
-		// 카테고리별 리스트 생성
+		// 카테고리별로 정리된 통합 Map 생성
 		Map<String, Object> AList = new HashMap<String, Object>();
-		List<EsVO> kList = new ArrayList<EsVO>();
-		List<EsVO> mList = new ArrayList<EsVO>();
+		// JTBC 카테고리 MAP 생성
+		Map<String, Object> JList = new HashMap<String, Object>();
+		// KBS 카테고리 MAP 생성
+		Map<String, Object> KList = new HashMap<String, Object>();
+		// MBC 카테고리 MAP 생성
+		Map<String, Object> MList = new HashMap<String, Object>();
 		
-		// 검색한 값을 넘겨 받음,
-		String str = request.getParameter("search"); 
-		modelMap.put("str", str);
+		
+		
+		// 결과 내 재검색을 위한 flag
+		String ostr = "";
 		// 결과 내 재검색 버튼 활성화 유무
-		String ostr = request.getParameter("re");
-		// 결과를 계속 활성화 하기 위해 반환함.
-		modelMap.put("on", ostr);
+		if (request.getParameter("re") != null) {
+			ostr = "on";
+		}
 		
 		// 순수한 통합검색 / 통합검색 + 결과내 재검색 (model로 검색 결과를 넘겨줌)
 		try {
-			if (ostr != "on") {
-				if (str != "" && str != null) {
+			if (!ostr.equals("on")) {
+				// 검색이 들어오면 단일 검색어 및 리스트에 집어 넣는다.
+				str[0] = request.getParameter("search");
+				rList.add(request.getParameter("search"));
+				
+				if (str[0] != "" && str != null) {
+					modelMap.put("str", str[0]);					
 					
 					// 반환된 리스트..
 					AList = service.TGET(str, cri);
-				
-					modelMap.put("JTBC", AList.get("JTBC"));
-					modelMap.put("MBC", AList.get("MBC"));
-					modelMap.put("KBS", AList.get("KBS"));
+					JList = service.JGET(str, cri);
+					KList = service.KGET(str, cri);
+					MList = service.MGET(str, cri);
 					
+					modelMap.put("JTBC", JList.get("JTBC"));
+					modelMap.put("MBC", MList.get("MBC"));
+					modelMap.put("KBS", KList.get("KBS"));
+
 					modelMap.put("elastic", AList);
 					modelMap.put("len", AList.get("total"));
+					modelMap.put("jlen", JList.get("total"));
+					modelMap.put("klen", KList.get("total"));
+					modelMap.put("mlen", MList.get("total"));
+					model.addAttribute("index", modelMap);
 				}
 			} else {
-				List<String> oss = new ArrayList<String>();
-				oss.add(str);
-				hit = service.AGET(oss);
+				rList.add(request.getParameter("search"));
+				for (int i = rList.size()-1; i < rList.size(); i++ ) {
+					str[i] = request.getParameter("search");
+					System.out.println(str[i]);
+				}		
+
+				modelMap.put("str", str);
+				System.out.println("0번 " + str[0]);
+				System.out.println("1번 " + str[1]);
+				
+				// 반환된 리스트..
+				AList = service.TGET(str, cri);
+				JList = service.JGET(str, cri);
+				KList = service.KGET(str, cri);
+				MList = service.MGET(str, cri);
+			
+				modelMap.put("JTBC", JList.get("JTBC"));
+				modelMap.put("KBS", KList.get("KBS"));
+				modelMap.put("MBC", MList.get("MBC"));	
+				
+				modelMap.put("on", ostr);
 				modelMap.put("elastic", hit);
 				modelMap.put("len", AList.get("len"));
 			}
-			model.addAttribute("index", modelMap);
+			
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
