@@ -69,8 +69,9 @@ public class EsController {
 			ostr = "on";
 		}
 		
-		// 순수한 통합검색 / 통합검색 + 결과내 재검색 (model로 검색 결과를 넘겨줌)
+		
 		try {
+			// 순수한 통합검색 / 통합검색 + 결과내 재검색 (model로 검색 결과를 넘겨줌)
 			if (!ostr.equals("on")) {
 				// 검색이 들어오면 단일 검색어 및 리스트에 집어 넣는다.
 				str[0] = request.getParameter("search");
