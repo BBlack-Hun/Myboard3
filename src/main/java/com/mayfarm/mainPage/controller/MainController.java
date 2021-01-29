@@ -1,6 +1,7 @@
 package com.mayfarm.mainPage.controller;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +27,20 @@ public class MainController {
 	private NoticeService Nservice;
 	
 	@RequestMapping(value="/Main", method=RequestMethod.GET)
-	public String Main(Model model, Criteria cri) throws Exception {
+	public String Main(Model model, Criteria cri, HttpServletRequest request) throws Exception {
 		logger.info("welcome Main");
 		
-		model.addAttribute("boardcnt", Bservice.totalCnt(cri));
-		model.addAttribute("noticecnt", Nservice.totalCnt(cri));
-		
-		return "Main";
+		if (request.getParameter("search") == null) {
+			model.addAttribute("boardcnt", Bservice.totalCnt(cri));
+			model.addAttribute("noticecnt", Nservice.totalCnt(cri));
+			return "Main";
+		} else {
+			System.out.println(request.getParameter("search"));
+			model.addAttribute("search", request.getParameter("search"));
+			model.addAttribute("Category", "통합검색");
+			return "redirect:/elastic/index";
+		}
+//		return "Main";
 		
 	}
 

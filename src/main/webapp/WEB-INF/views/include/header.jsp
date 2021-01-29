@@ -88,7 +88,7 @@
 						        </li>
 						        <li>
 						        	<c:choose>
-						        		<c:when test="${!empty sindex.elastic}">
+						        		<c:when test="${!empty index.elastic}">
 							            	<a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="nav-main-link-icon si si-energy"></i><span class="sidebar-mini-hide">엘라스틱 서치</span></a>
 						            	</c:when>
 						            	<c:otherwise>
@@ -97,22 +97,22 @@
 						            </c:choose>
 						            <ul>
 						                <li>
-						                    <a href="/MM/elastic/index">통합 검색</a>
+						                    <a href="/MM/elastic/index?search=${index.str}&Category=통합검색">통합검색</a>
 						                </li>
 						            </ul>
 						            <ul>
 						                <li>
-						                    <a href="/MM/elastic/JTBC">JTBC</a>
+						                    <a href="/MM/elastic/JTBC?search="+${index.str}>JTBC</a>
 						                </li>
 						            </ul>
 						            <ul>
 						                <li>
-						                    <a href="/MM/elastic/KBS">KBS</a>
+						                    <a href="/MM/elastic/KBS?search="+${index.str}>KBS</a>
 						                </li>
 						            </ul>
 						            <ul>
 						                <li>
-						                    <a href="/MM/elastic/MBC">MBC</a>
+						                    <a href="/MM/elastic/MBC?search="+${index.str}>MBC</a>
 						                </li>
 						            </ul>
 						        </li>

@@ -49,8 +49,8 @@
 									</c:when>
 								</c:choose>
 							</div>
-							<c:if test="${index.len > 0 }">
-								<span class="lead">"${index.str}"에 대한 검색 결과 <strong>(총<c:out value="${index.len}"/>건)</strong></span>
+							<c:if test="${index.elastic.total > 0 }">
+								<span class="lead">"${index.str}"에 대한 검색 결과 <strong>(총<c:out value="${index.elastic.total}"/>건)</strong></span>
 							</c:if>
 						</c:when>
 						<c:otherwise>
@@ -73,17 +73,17 @@
 								</c:choose>
 							</div>
 							<c:if test="${index.jlen > 0 }">
-								<span class="lead">"${index.str}"에 대한 검색 결과 <strong>(총<c:out value="${index.len}"/>건)</strong></span>
+								<span class="lead">"${index.str}"에 대한 검색 결과 <strong>(총<c:out value="${index.elastic.total}"/>건)</strong></span>
 							</c:if>
 						</c:otherwise>
 					</c:choose>
 				</form>
 				<c:choose>
-					<c:when test="${index.len > 0}">
+					<c:when test="${index.elastic.total > 0}">
 						<div>
 							<div>
 								<strong class="lead">JTBC</strong>
-								<c:forEach items="${index.JTBC}" var="jtbc">
+								<c:forEach items="${index.elastic.JTBC}" var="jtbc">
 									<div>
 										<hr />
 										<label for="title" class="col-sm-1 control-label">기사번호</label>

@@ -1,17 +1,15 @@
 package com.mayfarm.ES.service;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.BeanUtilsBean;
 import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.MultiSearchResponse.Item;
 import org.elasticsearch.action.search.SearchResponse;
@@ -29,8 +27,6 @@ import com.mayfarm.ES.vo.EsVO;
 @Service
 public class EsService {
 	
-	private static final int Map = 0;
-
 	@Inject
 	private EsDAO dao;
 	
@@ -44,6 +40,8 @@ public class EsService {
 	 * @throws IOException
 	 */
 	public Map<String,Object> TGET(String[] str, Criteria cri) throws IOException {
+		
+		Map<String, Object> semiTotal = new HashMap<String, Object>();
 		
 		// 반환을 위한 Map
 		Map<String, Object> returnMap = new HashMap<String, Object>();
@@ -59,14 +57,13 @@ public class EsService {
 		SearchResponse searchResponse_mbc = items[2].getResponse();
 		
 		// 결과 정제_JTBC
-		List<Map<String, Object>> list_jtbc = new ArrayList<Map<String, Object>>();
+		List<EsVO> list_jtbc = new ArrayList<EsVO>();
 		EsVO esVO = new EsVO();
 		for (SearchHit hit : searchResponse_jtbc.getHits().getHits()) {
 			// 기존 문장에 highlight를 씌운 태그를 덧 씌운다.
-			Map<String, Object> hhit = coverHighLightFields(hit);
+			esVO = coverHighLightFields2(hit);
 			
-//			esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
-			list_jtbc.add(hhit);
+			list_jtbc.add(esVO);
 		}
 		// 결과 정제_KBS
 		List<EsVO> list_kbs = new ArrayList<EsVO>();
@@ -74,7 +71,6 @@ public class EsService {
 			
 			esVO = coverHighLightFields2(hit);
 			
-//			esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
 			list_kbs.add(esVO);
 		}
 		// 결과 정제_MBC
@@ -83,31 +79,25 @@ public class EsService {
 			
 			esVO = coverHighLightFields2(hit);
 			
-//			esVO = gson.fromJson(hit.getSourceAsString(), EsVO.class);
 			list_mbc.add(esVO);
 		}
 		// 전체 검색 결과 수
 		long total = 0;
+		int cnt = 0;
 		for (Item item : items) {
+			long stotal = 0;
 			SearchResponse response = item.getResponse();
 			total += response.getHits().getTotalHits().value;
+			// 각 카테고리별 검색 결과수
+			stotal = response.getHits().getTotalHits().value;
+			// Map에 put 
+			semiTotal.put("item"+cnt,stotal);
+			cnt +=1;
+			
+			
 		}
 		
-		// JTBC 결과 수
-		long jtotal = 0;
-		SearchResponse jresponse = items[0].getResponse();
-		jtotal += jresponse.getHits().getTotalHits().value;
-		
-		// KBS 결과 수
-		long ktotal = 0;
-		SearchResponse kresponse = items[0].getResponse();
-		ktotal += kresponse.getHits().getTotalHits().value;
-		
-		// MBC 결과 수
-		long mtotal = 0;
-		SearchResponse mresponse = items[0].getResponse();
-		mtotal += mresponse.getHits().getTotalHits().value;
-		
+		returnMap.put("stotal", semiTotal);
 		returnMap.put("JTBC", list_jtbc);
 		returnMap.put("KBS", list_kbs);
 		returnMap.put("MBC", list_mbc);
@@ -175,6 +165,7 @@ public class EsService {
 			list_ktbc.add(hhit);
 		}
 		
+		// 검색한 KBS 기사 갯수
 		long total = searchResponse.getHits().getTotalHits().value;
 		
 		returnMap.put("total", total);

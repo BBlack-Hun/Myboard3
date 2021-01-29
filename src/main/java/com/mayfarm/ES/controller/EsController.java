@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 import com.mayfarm.ES.service.EsService;
 import com.mayfarm.ES.vo.Criteria;
 import com.mayfarm.ES.vo.EsVO;
@@ -41,7 +42,7 @@ public class EsController {
 		
 	//게시판 목록
 	@RequestMapping(value="/index", method=RequestMethod.GET)
-	public String index(Model model, HttpServletRequest request, Criteria cri, RedirectAttributes rttr) throws Exception {
+	public String index(Model model, HttpServletRequest request, Criteria cri) throws Exception {
 		// 로그 출력
 		logger.info("elastic Search page");
 		
@@ -51,7 +52,7 @@ public class EsController {
 		// 한번에 값을 넘기기 위해, Map에 저장해 둔다.
 		Map<String, Object> modelMap = new HashMap<String, Object>();
 		
-		// 카테고리별로 정리된 통합 Map 생성
+		// 통합검색 MAP 생성
 		Map<String, Object> AList = new HashMap<String, Object>();
 		// JTBC 카테고리 MAP 생성
 		Map<String, Object> JList = new HashMap<String, Object>();
@@ -64,69 +65,71 @@ public class EsController {
 		
 		// 결과 내 재검색을 위한 flag
 		String ostr = "";
+		
 		// 결과 내 재검색 버튼 활성화 유무
 		if (request.getParameter("re") != null) {
 			ostr = "on";
-		}
+			System.out.println(ostr);
+		} else
+			ostr = null;
 		
+		// 검색어 유입
+		str[0] = request.getParameter("search");
+		// 카테고리 유입
+		String Category = request.getParameter("Category");
 		
 		try {
-			// 순수한 통합검색 / 통합검색 + 결과내 재검색 (model로 검색 결과를 넘겨줌)
-			if (!ostr.equals("on")) {
-				// 검색이 들어오면 단일 검색어 및 리스트에 집어 넣는다.
-				str[0] = request.getParameter("search");
-				rList.add(request.getParameter("search"));
-				
-				if (str[0] != "" && str != null) {
-					modelMap.put("str", str[0]);					
-					
-					// 반환된 리스트..
+			switch (Category) {
+				case "통합검색":
 					AList = service.TGET(str, cri);
-					JList = service.JGET(str, cri);
-					KList = service.KGET(str, cri);
-					MList = service.MGET(str, cri);
 					
-					modelMap.put("JTBC", JList.get("JTBC"));
-					modelMap.put("MBC", MList.get("MBC"));
-					modelMap.put("KBS", KList.get("KBS"));
-
+					modelMap.put("on", ostr);
+					modelMap.put("Category", Category);
+					modelMap.put("str", str[0]);
 					modelMap.put("elastic", AList);
 					modelMap.put("len", AList.get("total"));
-					modelMap.put("jlen", JList.get("total"));
-					modelMap.put("klen", KList.get("total"));
-					modelMap.put("mlen", MList.get("total"));
+					break;
+					
+				case "JTBC":
+					JList = service.JGET(str, cri);
+					
+					modelMap.put("on", ostr);
+					modelMap.put("Category", Category);
+					modelMap.put("str", str[0]);
+					modelMap.put("elastic", JList);
 					model.addAttribute("index", modelMap);
-				}
-			} else {
-				rList.add(request.getParameter("search"));
-				for (int i = rList.size()-1; i < rList.size(); i++ ) {
-					str[i] = request.getParameter("search");
-					System.out.println(str[i]);
-				}		
+					return "/elastic/JTBC";
+					
+				case "KBS":
+					KList = service.KGET(str, cri);
+					
+					modelMap.put("on", ostr);
+					modelMap.put("Category", Category);
+					modelMap.put("str", str[0]);
+					modelMap.put("elastic", KList);
+					model.addAttribute("index", modelMap);
+					return "/elastic/KBS";
 
-				modelMap.put("str", str);
-				System.out.println("0번 " + str[0]);
-				System.out.println("1번 " + str[1]);
+				case "MBC":
+					MList = service.MGET(str, cri);
+					
+					modelMap.put("on", ostr);
+					modelMap.put("Category", Category);
+					modelMap.put("str", str[0]);
+					modelMap.put("elastic", MList);
+					model.addAttribute("index", modelMap);
+					return "/elastic/MBC";
+					
+				default:
+					System.out.println("검색어 없음");
+					break;
 				
-				// 반환된 리스트..
-				AList = service.TGET(str, cri);
-				JList = service.JGET(str, cri);
-				KList = service.KGET(str, cri);
-				MList = service.MGET(str, cri);
-			
-				modelMap.put("JTBC", JList.get("JTBC"));
-				modelMap.put("KBS", KList.get("KBS"));
-				modelMap.put("MBC", MList.get("MBC"));	
-				
-				modelMap.put("on", ostr);
-				modelMap.put("elastic", hit);
-				modelMap.put("len", AList.get("len"));
 			}
-			
-			
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		model.addAttribute("index", modelMap);
 		return "/elastic/index";
 	}
 	
