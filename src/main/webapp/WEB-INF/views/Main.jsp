@@ -108,7 +108,6 @@
 						     <input type="text" name="search" placeholder="검색어를 입력해주세요.">
 						</div>
 						<div class="button">
-<!-- 						     <input type="submit" href="#" value="검색" onClick="fn_contentView(search)"> -->
 						     <input type="submit" href="#" value="검색">
 						</div>
 					</form>
@@ -118,15 +117,6 @@
             </main>
             <!-- END Main Container -->
 <script>
-	function fn_contentView(search){
-	
-		var url = "${pageContext.request.contextPath}/elastic/index";
-	
-		url = url + "?search="+search;
-	
-		location.href = url;
-	
-	}
 
 </script>
 <!-- footer include -->                

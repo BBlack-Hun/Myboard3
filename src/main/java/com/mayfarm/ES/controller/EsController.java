@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 import com.mayfarm.ES.service.EsService;
 import com.mayfarm.ES.vo.Criteria;
 import com.mayfarm.ES.vo.EsVO;
+import com.mayfarm.ES.vo.PageMaker;
 
 
 
@@ -61,29 +62,26 @@ public class EsController {
 		// MBC 카테고리 MAP 생성
 		Map<String, Object> MList = new HashMap<String, Object>();
 		
-		
-		
-		// 결과 내 재검색을 위한 flag
-		String ostr = "";
-		
-		// 결과 내 재검색 버튼 활성화 유무
-		if (request.getParameter("re") != null) {
-			ostr = "on";
-			System.out.println(ostr);
-		} else
-			ostr = null;
+		// PageMaker 객체 생성
+		PageMaker pageMaker = new PageMaker(cri);
+		// 관련 변수 초기화
+		String totalCount = "";
+		int toCnt;
 		
 		// 검색어 유입
 		str[0] = request.getParameter("search");
+		// 재검색 단어
+		String ostr = str[0];
 		// 카테고리 유입
 		String Category = request.getParameter("Category");
 		
 		try {
 			switch (Category) {
 				case "통합검색":
-					AList = service.TGET(str, cri);
+					Category = "통합검색";
+					AList = service.TGET(str, cri, Category);
 					
-					modelMap.put("on", ostr);
+					modelMap.put("ostr", ostr);
 					modelMap.put("Category", Category);
 					modelMap.put("str", str[0]);
 					modelMap.put("elastic", AList);
@@ -91,9 +89,18 @@ public class EsController {
 					break;
 					
 				case "JTBC":
-					JList = service.JGET(str, cri);
+					Category = "JTBC";
+					JList = service.JGET(str, cri, Category);
+										
+					// 전체 개시물 수를 구함 String -> int 형변환
+					totalCount = JList.get("total").toString();
+					toCnt = Integer.parseInt(totalCount);
 					
-					modelMap.put("on", ostr);
+					//pageMaker로 전달 -> pageMaker는 startPage, endPage, prev, next를 계산.
+					pageMaker.setTotalCount(toCnt);
+					
+					modelMap.put("pageMaker", pageMaker);
+					modelMap.put("ostr", ostr);
 					modelMap.put("Category", Category);
 					modelMap.put("str", str[0]);
 					modelMap.put("elastic", JList);
@@ -101,9 +108,18 @@ public class EsController {
 					return "/elastic/JTBC";
 					
 				case "KBS":
-					KList = service.KGET(str, cri);
+					Category = "KBS";
+					KList = service.KGET(str, cri, Category);
 					
-					modelMap.put("on", ostr);
+					// 전체 개시물 수를 구함 String -> int 형변환
+					totalCount = KList.get("total").toString();
+					toCnt = Integer.parseInt(totalCount);
+					
+					//pageMaker로 전달 -> pageMaker는 startPage, endPage, prev, next를 계산.
+					pageMaker.setTotalCount(toCnt);
+					
+					modelMap.put("pageMaker", pageMaker);
+					modelMap.put("ostr", ostr);
 					modelMap.put("Category", Category);
 					modelMap.put("str", str[0]);
 					modelMap.put("elastic", KList);
@@ -111,8 +127,17 @@ public class EsController {
 					return "/elastic/KBS";
 
 				case "MBC":
-					MList = service.MGET(str, cri);
+					Category = "MBC";
+					MList = service.MGET(str, cri, Category);
 					
+					// 전체 개시물 수를 구함 String -> int 형변환
+					totalCount = MList.get("total").toString();
+					toCnt = Integer.parseInt(totalCount);
+					
+					//pageMaker로 전달 -> pageMaker는 startPage, endPage, prev, next를 계산.
+					pageMaker.setTotalCount(toCnt);
+
+					modelMap.put("pageMaker", pageMaker);					
 					modelMap.put("on", ostr);
 					modelMap.put("Category", Category);
 					modelMap.put("str", str[0]);

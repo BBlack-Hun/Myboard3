@@ -43,19 +43,22 @@ public class EsDAO {
 	 * @return 통합 검색 결과
 	 * @throws IOException
 	 */
-	public MultiSearchResponse TGET(String[] str, Criteria cri) throws IOException {
+	public MultiSearchResponse TGET(String[] str, Criteria cri, String Category) throws IOException {
+		
+		// pagination을 위한 파라미터 셋팅이 필요...
+		// 지금은 무조건 4개만 나오게 셋팅되어 있다. 통합에서만 4개, 각 카테고리로 들어갔을때는, 10개+a씩
 		
 		// 통합검색을 위한 Multisearch 초기화
 		MultiSearchRequest multiSarRequest = new MultiSearchRequest();
 		
 		// JTBC
-		SearchRequest searchRequst_jtbc = getJtbcRequest(cri, str[0]);
+		SearchRequest searchRequst_jtbc = getJtbcRequest(cri, str[0], Category);
 		multiSarRequest.add(searchRequst_jtbc);
 		// KBS
-		SearchRequest searchRequst_kbs = getKbsRequest(cri, str[0]);
+		SearchRequest searchRequst_kbs = getKbsRequest(cri, str[0], Category);
 		multiSarRequest.add(searchRequst_kbs);
 		// MBC
-		SearchRequest searchRequst_mbc = getMbcRequest(cri, str[0]);
+		SearchRequest searchRequst_mbc = getMbcRequest(cri, str[0], Category);
 		multiSarRequest.add(searchRequst_mbc);
 		
 		return restClient.msearch(multiSarRequest, RequestOptions.DEFAULT);
@@ -76,8 +79,8 @@ public class EsDAO {
 	 * @return
 	 * @throws IOException
 	 */
-	public SearchResponse JGET(String[] str, Criteria cri) throws IOException {
-		SearchRequest searchRequest = getJtbcRequest(cri, str[0]);
+	public SearchResponse JGET(String[] str, Criteria cri, String Category) throws IOException {
+		SearchRequest searchRequest = getJtbcRequest(cri, str[0], Category);
 		return restClient.search(searchRequest, RequestOptions.DEFAULT);
 	}
 	
@@ -88,8 +91,8 @@ public class EsDAO {
 	 * @return
 	 * @throws IOException
 	 */
-	public SearchResponse MGET(String[] str, Criteria cri) throws IOException {
-		SearchRequest searchRequest = getMbcRequest(cri, str[0]);
+	public SearchResponse MGET(String[] str, Criteria cri, String Category) throws IOException {
+		SearchRequest searchRequest = getMbcRequest(cri, str[0], Category);
 		return restClient.search(searchRequest, RequestOptions.DEFAULT);
 	}
 	
@@ -100,8 +103,8 @@ public class EsDAO {
 	 * @return
 	 * @throws IOException
 	 */
-	public SearchResponse KGET(String[] str, Criteria cri) throws IOException {
-		SearchRequest searchRequest = getKbsRequest(cri, str[0]);
+	public SearchResponse KGET(String[] str, Criteria cri, String Category) throws IOException {
+		SearchRequest searchRequest = getKbsRequest(cri, str[0], Category);
 		return restClient.search(searchRequest, RequestOptions.DEFAULT);
 	}
 	
@@ -111,11 +114,23 @@ public class EsDAO {
 	 * @param str
 	 * @return JTBC 기사 리퀘스트
 	 */
-	private SearchRequest getJtbcRequest(Criteria cri, String str) {
+	private SearchRequest getJtbcRequest(Criteria cri, String str, String Category) {
 		
+		// 변수 초기화(Pagination)
+		int listSize = cri.getPerPageNum();
+		
+		// 카테고리가 ""값일 경우
+		if (Category == "통합검색") {
+			// listSize 정의
+			listSize = 4;			
+		}
+		// 카테고리가 "JTBC"인 경우
+		else {
+			listSize = (listSize < 10) ? 10 : listSize;
+			
+		}
 		// 값 세팅
 		int page = cri.getPage();
-		int listSize = cri.getPerPageNum();
 		int from = (page == 1) ? 0 : listSize * (page - 1);
 		
 		// 엘라스틱 초기화
@@ -157,11 +172,23 @@ public class EsDAO {
 	 * @param str
 	 * @return KBS 기사 리퀘스트
 	 */
-	private SearchRequest getKbsRequest(Criteria cri, String str) {
+	private SearchRequest getKbsRequest(Criteria cri, String str, String Category) {
 			
+		// 변수 초기화(Pagination)
+		int listSize = cri.getPerPageNum();
+		
+		// 카테고리가 ""값일 경우
+		if (Category == "통합검색") {
+			// listSize 정의
+			listSize = 4;			
+		}
+		// 카테고리가 "JTBC"인 경우
+		else {
+			listSize = (listSize < 10) ? 10 : listSize;
+			
+		}
 		// 값 세팅
 		int page = cri.getPage();
-		int listSize = cri.getPerPageNum();
 		int from = (page == 1) ? 0 : listSize * (page - 1);
 		
 		// 엘라스틱 초기화
@@ -203,11 +230,23 @@ public class EsDAO {
 	 * @param str
 	 * @return MBC 기사 리퀘스트
 	 */
-	private SearchRequest getMbcRequest(Criteria cri, String str) {
+	private SearchRequest getMbcRequest(Criteria cri, String str, String Category) {
 	
+		// 변수 초기화(Pagination)
+		int listSize = cri.getPerPageNum();
+		
+		// 카테고리가 ""값일 경우
+		if (Category == "통합검색") {
+			// listSize 정의
+			listSize = 4;			
+		}
+		// 카테고리가 "JTBC"인 경우
+		else {
+			listSize = (listSize < 10) ? 10 : listSize;
+			
+		}
 		// 값 세팅
 		int page = cri.getPage();
-		int listSize = cri.getPerPageNum();
 		int from = (page == 1) ? 0 : listSize * (page - 1);
 		
 		// 엘라스틱 초기화

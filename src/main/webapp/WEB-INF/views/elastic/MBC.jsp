@@ -31,10 +31,19 @@
 				<form  class="search-container" method="get">
 					<c:choose>
 						<c:when test="${index.str ne '' }">
-							<label>통합검색</label>
+							<label>MBC</label>
 							<input type="text" name="search" id="search-bar" value="${index.str}" placeholder="검색어를 입력하세요.">
+							<input type="hidden" name="Category" id="search-bar" value="MBC">
 							<button type="submit">검색</button>
 							<button type="button">상세검색</button>
+							<div class="form-group row">
+							    <select class="form-control" id="status" name="status">
+							        <option c:each="stat : ${statuses}"
+							                c:value="${stat}"
+							                c:text="${stat}"
+							                c:selected="${stat.equals(group.status)}"/>
+							    </select>
+							</div>
 							<div>
 								<c:choose>
 									<c:when test="${index.on ne null}">
@@ -49,13 +58,14 @@
 									</c:when>
 								</c:choose>
 							</div>
-							<c:if test="${index.len > 0 }">
-								<span class="lead">"${index.str}"에 대한 검색 결과 <strong>(총<c:out value="${index.len}"/>건)</strong></span>
+							<c:if test="${index.elastic.total > 0 }">
+								<span class="lead">"${index.str}"에 대한 검색 결과 <strong>(총<c:out value="${index.elastic.total}"/>건)</strong></span>
 							</c:if>
 						</c:when>
 						<c:otherwise>
-							<label>통합검색</label>
+							<label>MBC</label>
 							<input type="text" name="search" id="search-bar" placeholder="검색어를 입력하세요.">
+							<input type="hidden" name="Category" id="search-bar" value="MBC">
 							<button type="submit">검색</button>
 							<button type="button">상세검색</button>
 							<div>
@@ -72,79 +82,58 @@
 									</c:otherwise>
 								</c:choose>
 							</div>
-							<c:if test="${index.mlen > 0 }">
-								<span class="lead">"${index.str}"에 대한 검색 결과 <strong>(총<c:out value="${index.len}"/>건)</strong></span>
+							<c:if test="${index.elastic.total > 0 }">
+								<span class="lead">"${index.str}"에 대한 검색 결과 <strong>(총<c:out value="${index.elastic.total}"/>건)</strong></span>
 							</c:if>
 						</c:otherwise>
 					</c:choose>
 				</form>
 				<c:choose>
-					<c:when test="${index.len > 0}">
+					<c:when test="${index.elastic.total > 0}">
 						<div>
 							<div>
-								<strong class="lead">JTBC</strong>
-								<c:forEach items="${index.JTBC}" var="jtbc">
+								<strong class="lead">MBC</strong>
+								<c:forEach items="${index.elastic.MBC}" var="mbc">
 									<div>
 										<hr />
 										<label for="title" class="col-sm-1 control-label">기사번호</label>
-										<p><c:out value="${jtbc.no}" /></p>
-										<label for="title" class="col-sm-1 control-label">제목</label>
-										<p>
-											<a href="read?no=${jtbc.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}">${jtbc.violt_cas_nm}</a>
-										</p>
-										<label for="title" class="col-sm-1 control-label">내용</label>
-										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;">${jtbc.violt_cas_cn}</p>
-										<label for="title" class="col-sm-1 control-label">게시날짜</label>
-<%-- 										<p><fmt:formatDate value="${jtbc.date}" pattern="yyyy-MM-dd"/></p> --%>
-<%-- 										<fmt:parseDate value="${jtbc.date}" var="date" pattern="yyyyMMdd"/> --%>
-											<p><c:out value="${jtbc.date}" /></p>
-									</div>
-								</c:forEach>
-								<c:if test="${index.jlen > 4 }">
-									<input type="button" value="JTBC 기사 더보기" onclick="location.href='#'">
-								</c:if>
-							<hr />
-							</div>
-							<div>
-								<strong class="lead">KBS</strong>
-								<c:forEach items="${index.KBS}" var="kbs">
-									<div>
-										<hr />
-										<label for="title" class="col-sm-1 control-label">번호</label>
-										<p><c:out value="${kbs.no}" /></p>
-										<label for="title" class="col-sm-1 control-label">제목</label>
-										<p>
-											<a href="read?no=${kbs.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}">${kbs.violt_cas_nm}</a>
-										</p>
-										<label for="title" class="col-sm-1 control-label">내용</label>
-										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;">${kbs.violt_cas_cn}</p>
-										<label for="title" class="col-sm-1 control-label">게시날짜</label>
-										<p>${kbs.date}</p>
-										
-									</div>
-								</c:forEach>
-							<hr />
-							</div>
-							<div>
-								<strong class="lead">MBC</strong>
-								<c:forEach items="${index.MBC}" var="mbc">
-									<div>
-										<hr />
-										<label for="title" class="col-sm-1 control-label">번호</label>
 										<p><c:out value="${mbc.no}" /></p>
 										<label for="title" class="col-sm-1 control-label">제목</label>
 										<p>
-											<a href="read?no=${mbc.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}">${mbc.violt_cas_nm}</a>
+											<a href="read?no=${mbc.no}&page=${index.pageMaker.cri.page}&perPageNum${index.pageMaker.cri.perPageNum}">${mbc.violt_cas_nm}</a>
 										</p>
 										<label for="title" class="col-sm-1 control-label">내용</label>
 										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;">${mbc.violt_cas_cn}</p>
 										<label for="title" class="col-sm-1 control-label">게시날짜</label>
-										<p>${mbc.date}</p>
-										
+<%-- 										<p><fmt:formatDate value="${jtbc.date}" pattern="yyyy-MM-dd"/></p> --%>
+<%-- 										<fmt:parseDate value="${jtbc.date}" var="date" pattern="yyyyMMdd"/> --%>
+											<p><c:out value="${mbc.date}" /></p>
 									</div>
 								</c:forEach>
 							<hr />
 							</div>
+							<c:if test="${index.pageMaker.totalDataCount > index.pageMaker.cri.perPageNum }">
+								<div class="text-center">
+									<nav aria-label="pagination">
+										<ul class="pagination">
+											<!-- prev 버튼 -->
+											<li id="page-prev">
+												<a href="index?search=${index.str}&Category=${index.Category}&page=${index.pageMaker.startPage-1}&perPageNum=${index.pageMaker.cri.perPageNum}" aria-label="Prev"><span class="aria-hidden="true"><<</span></a>
+											</li>
+											<c:forEach begin="${index.pageMaker.startPage}" end="${index.pageMaker.endPage }" var="idx">
+												<li id="page${idx}">
+<%-- 													<a class="page-item active" href="index?search=${index.str}&Category=${index.Category}${index.pageMaker.makeQuery(idx)}"><span>${idx}<span class="sr-only"></span></span></a> --%>
+													<a class="page-item active" href="index?search=${index.str}&Category=${index.Category}&page=${idx}&perPageNum=${index.pageMaker.cri.perPageNum}"><span>${idx}<span class="sr-only"></span></span></a>
+												</li>
+											</c:forEach>
+												<!-- next 버튼 -->
+											<li id="page-next">
+												<a href="index?search=${index.str}&Category=${index.Category}&page=${index.pageMaker.endPage+1}&perPageNum=${index.pageMaker.cri.perPageNum}" aria-label="Next"><span class="aria-hidden="true">>></span></a>
+											</li>
+										</ul>
+									</nav>
+								</div>
+							</c:if>
 						</div>
 					</c:when>
 					<c:when test="${!empty index.str and index.len eq 0}">
@@ -189,7 +178,17 @@
 </div>
 <!-- END Page Content -->
 <!-- Script -->
-
+<script>
+	// 입력받은 카테고리별 항목으로 이동하기
+	function fn_contentView(){
+		// 고정시킬 url 주소
+		var url = "${pageContext.request.contextPath}/elastic/index?search='${index.str}'";
+		// 파라미터로 입력받은 카테로리 추가
+		url = url + "&Category="+ MBC;
+		// 이동
+		location.href = url;
+	}
+</script>
 
 <!-- footer include -->                
 <%@include file="../include/footer.jsp" %>

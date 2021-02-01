@@ -12,7 +12,7 @@ public class Criteria {
 	
 	public Criteria() {
 		this.page = 1;
-		this.perPageNum = 4;
+		this.perPageNum = 10;
 	}
 	
 	// pageStart를 반환

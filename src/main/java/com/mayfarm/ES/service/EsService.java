@@ -39,14 +39,14 @@ public class EsService {
 	 * @return
 	 * @throws IOException
 	 */
-	public Map<String,Object> TGET(String[] str, Criteria cri) throws IOException {
+	public Map<String,Object> TGET(String[] str, Criteria cri, String Category) throws IOException {
 		
 		Map<String, Object> semiTotal = new HashMap<String, Object>();
 		
 		// 반환을 위한 Map
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		
-		MultiSearchResponse multiSearchResponse = dao.TGET(str, cri);
+		MultiSearchResponse multiSearchResponse = dao.TGET(str, cri, Category);
 		Item items[] = multiSearchResponse.getResponses();
 		
 		// JTBC
@@ -113,13 +113,13 @@ public class EsService {
 	 * @return JTBC 기사 검색결과
 	 * @throws IOException
 	 */
-	public Map<String,Object> JGET(String[] str, Criteria cri) throws IOException {
+	public Map<String,Object> JGET(String[] str, Criteria cri, String Category) throws IOException {
 		
 		// 반환을 위한 Map
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		
-		//
-		SearchResponse searchResponse = dao.JGET(str, cri);
+		// 데이터를 가져온다. 이때... 지정???
+		SearchResponse searchResponse = dao.JGET(str, cri, Category);
 		// 결과 정제_JTBC
 		List<Map<String, Object>> list_jtbc = new ArrayList<Map<String, Object>>();
 		EsVO esVO = new EsVO();
@@ -147,13 +147,13 @@ public class EsService {
 	 * @return KBS 기사 검색 결과
 	 * @throws IOException
 	 */
-	public Map<String,Object> KGET(String[] str, Criteria cri) throws IOException {
+	public Map<String,Object> KGET(String[] str, Criteria cri, String Category) throws IOException {
 		
 		// 반환을 위한 Map
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		
 		//
-		SearchResponse searchResponse = dao.KGET(str, cri);
+		SearchResponse searchResponse = dao.KGET(str, cri, Category);
 		// 결과 정제_KBS
 		List<Map<String, Object>> list_ktbc = new ArrayList<Map<String, Object>>();
 		EsVO esVO = new EsVO();
@@ -182,13 +182,13 @@ public class EsService {
 	 * @return MBC 기사 검색 결과
 	 * @throws IOException
 	 */
-	public Map<String,Object> MGET(String[] str, Criteria cri) throws IOException {
+	public Map<String,Object> MGET(String[] str, Criteria cri, String Category) throws IOException {
 		
 		// 반환을 위한 Map
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		
 		//
-		SearchResponse searchResponse = dao.MGET(str, cri);
+		SearchResponse searchResponse = dao.MGET(str, cri, Category);
 		// 결과 정제_MBC
 		List<Map<String, Object>> list_mtbc = new ArrayList<Map<String, Object>>();
 		EsVO esVO = new EsVO();

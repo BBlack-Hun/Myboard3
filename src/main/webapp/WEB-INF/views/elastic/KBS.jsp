@@ -31,9 +31,9 @@
 				<form  class="search-container" method="get">
 					<c:choose>
 						<c:when test="${index.str ne '' }">
-							<label>JTBC</label>
+							<label>KBS</label>
 							<input type="text" name="search" id="search-bar" value="${index.str}" placeholder="검색어를 입력하세요.">
-							<input type="hidden" name="Category" id="search-bar" value="통합검색">
+							<input type="hidden" name="Category" id="search-bar" value="KBS">
 							<button type="submit">검색</button>
 							<button type="button">상세검색</button>
 							<div>
@@ -55,9 +55,9 @@
 							</c:if>
 						</c:when>
 						<c:otherwise>
-							<label>JTBC</label>
+							<label>KBS</label>
 							<input type="text" name="search" id="search-bar" placeholder="검색어를 입력하세요.">
-							<input type="hidden" name="Category" id="search-bar" value="통합검색">
+							<input type="hidden" name="Category" id="search-bar" value="KBS">
 							<button type="submit">검색</button>
 							<button type="button">상세검색</button>
 							<div>
@@ -92,7 +92,7 @@
 										<p><c:out value="${kbs.no}" /></p>
 										<label for="title" class="col-sm-1 control-label">제목</label>
 										<p>
-											<a href="read?no=${kbs.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}">${kbs.violt_cas_nm}</a>
+											<a href="read?no=${kbs.no}&page=${index.pageMaker.cri.page}&perPageNum${index.pageMaker.cri.perPageNum}">${kbs.violt_cas_nm}</a>
 										</p>
 										<label for="title" class="col-sm-1 control-label">내용</label>
 										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;">${kbs.violt_cas_cn}</p>
@@ -102,6 +102,28 @@
 								</c:forEach>
 							<hr />
 							</div>
+							<c:if test="${index.pageMaker.totalDataCount > index.pageMaker.cri.perPageNum }">
+								<div class="text-center">
+									<nav aria-label="pagination">
+										<ul class="pagination">
+											<!-- prev 버튼 -->
+											<li id="page-prev">
+												<a href="index?search=${index.str}&Category=${index.Category}&page=${index.pageMaker.startPage-1}&perPageNum=${index.pageMaker.cri.perPageNum}" aria-label="Prev"><span class="aria-hidden="true"><<</span></a>
+											</li>
+											<c:forEach begin="${index.pageMaker.startPage}" end="${index.pageMaker.endPage }" var="idx">
+												<li id="page${idx}">
+<%-- 													<a class="page-item active" href="index?search=${index.str}&Category=${index.Category}${index.pageMaker.makeQuery(idx)}"><span>${idx}<span class="sr-only"></span></span></a> --%>
+													<a class="page-item active" href="index?search=${index.str}&Category=${index.Category}&page=${idx}&perPageNum=${index.pageMaker.cri.perPageNum}"><span>${idx}<span class="sr-only"></span></span></a>
+												</li>
+											</c:forEach>
+												<!-- next 버튼 -->
+											<li id="page-next">
+												<a href="index?search=${index.str}&Category=${index.Category}&page=${index.pageMaker.endPage+1}&perPageNum=${index.pageMaker.cri.perPageNum}" aria-label="Next"><span class="aria-hidden="true">>></span></a>
+											</li>
+										</ul>
+									</nav>
+								</div>
+							</c:if>
 						</div>
 					</c:when>
 					<c:when test="${!empty index.str and index.len eq 0}">

@@ -31,8 +31,9 @@
 				<form  class="search-container" method="get">
 					<c:choose>
 						<c:when test="${index.str ne '' }">
-							<label>통합검색</label>
+							<label>JTBC</label>
 							<input type="text" name="search" id="search-bar" value="${index.str}" placeholder="검색어를 입력하세요.">
+							<input type="hidden" name="Category" id="search-bar" value="JTBC">
 							<button type="submit">검색</button>
 							<button type="button">상세검색</button>
 							<div>
@@ -54,8 +55,9 @@
 							</c:if>
 						</c:when>
 						<c:otherwise>
-							<label>통합검색</label>
+							<label>JTBC</label>
 							<input type="text" name="search" id="search-bar" placeholder="검색어를 입력하세요.">
+							<input type="hidden" name="Category" id="search-bar" value="JTBC">
 							<button type="submit">검색</button>
 							<button type="button">상세검색</button>
 							<div>
@@ -90,7 +92,7 @@
 										<p><c:out value="${jtbc.no}" /></p>
 										<label for="title" class="col-sm-1 control-label">제목</label>
 										<p>
-											<a href="read?no=${jtbc.no}&page=${pageMaker.cri.page}&perPageNum${pageMaker.cri.perPageNum}">${jtbc.violt_cas_nm}</a>
+											<a href="read?no=${jtbc.no}&page=${index.pageMaker.cri.page}&perPageNum${index.pageMaker.cri.perPageNum}">${jtbc.violt_cas_nm}</a>
 										</p>
 										<label for="title" class="col-sm-1 control-label">내용</label>
 										<p style="overflow:hidden; white-space : nowrap; text-overflow: ellipsis;">${jtbc.violt_cas_cn}</p>
@@ -102,6 +104,29 @@
 								</c:forEach>
 							<hr />
 							</div>
+							<c:if test="${index.pageMaker.totalDataCount > index.pageMaker.cri.perPageNum }">
+								<div class="text-center">
+									<nav aria-label="pagination">
+										<ul class="pagination">
+											<!-- prev 버튼 -->
+											<li id="page-prev">
+												<a href="index?search=${index.str}&Category=${index.Category}&page=${index.pageMaker.startPage-1}&perPageNum=${index.pageMaker.cri.perPageNum}" aria-label="Prev"><span class="aria-hidden="true"><<</span></a>
+											</li>
+											<c:forEach begin="${index.pageMaker.startPage}" end="${index.pageMaker.endPage }" var="idx">
+												<li id="page${idx}">
+<%-- 													<a class="page-item active" href="index?search=${index.str}&Category=${index.Category}${index.pageMaker.makeQuery(idx)}"><span>${idx}<span class="sr-only"></span></span></a> --%>
+													<a class="page-item active" href="index?search=${index.str}&Category=${index.Category}&page=${idx}&perPageNum=${index.pageMaker.cri.perPageNum}"><span>${idx}<span class="sr-only"></span></span></a>
+												</li>
+											</c:forEach>
+												<!-- next 버튼 -->
+											<li id="page-next">
+												<a href="index?search=${index.str}&Category=${index.Category}&page=${index.pageMaker.endPage+1}&perPageNum=${index.pageMaker.cri.perPageNum}" aria-label="Next"><span class="aria-hidden="true">>></span></a>
+											</li>
+										</ul>
+									</nav>
+								</div>
+							</c:if>
+						</div>
 					</c:when>
 					<c:when test="${!empty index.str and index.len eq 0}">
 						<div class="subContSec">
@@ -145,7 +170,52 @@
 </div>
 <!-- END Page Content -->
 <!-- Script -->
-
-
+<script>
+	// 입력받은 카테고리별 항목으로 이동하기
+	function fn_contentView(){
+		// 고정시킬 url 주소
+		var url = "${pageContext.request.contextPath}/elastic/index?search='${index.str}'";
+		// 파라미터로 입력받은 카테로리 추가
+		url = url + "&Category="+ MBC;
+		// 이동
+		location.href = url;
+	}
+	
+	$(function(){
+		//perPageNum select 박스 설정
+		setPerPageNumSelect();
+				
+		//prev 버튼 활성화, 비활성화 처리
+		var canPrev = '${index.pageMaker.prev}';
+		if(canPrev !== 'true'){
+			$('#page-prev').addClass('disabled');
+		}
+		
+		//next 버튼 활성화, 비활성화 처리
+		var canNext = '${index.pageMaker.next}';
+		if(canNext !== 'true'){
+			$('#page-next').addClass('disabled');
+		}
+		
+		//현재 페이지 파란색으로 활성화
+		var thisPage = '${index.pageMaker.cri.page}';
+		//매번 refresh 되므로 다른 페이지 removeClass 할 필요는 없음->Ajax 이용시엔 해야함
+		$('#page'+thisPage).addClass('active');
+	})
+	
+	function setPerPageNumSelect(){
+		var perPageNum = "${index.pageMaker.cri.perPageNum}";
+		var $perPageSel = $('#perPageSel');
+		var thisPage = '${index.pageMaker.cri.page}';
+		$perPageSel.val(perPageNum).prop("selected",true);
+		//PerPageNum가 바뀌면 링크 이동
+		$perPageSel.on('change',function(){
+			//pageMarker.makeQuery 사용 못하는 이유: makeQuery는 page만을 매개변수로 받기에 변경된 perPageNum을 반영못함
+			window.location.href = "&page="+thisPage+"&perPageNum="+$perPageSel.val();
+		})
+	}
+	
+	
+</script>
 <!-- footer include -->                
 <%@include file="../include/footer.jsp" %>
